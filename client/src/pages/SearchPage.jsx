@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search as SearchIcon, Filter } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search as SearchIcon } from 'lucide-react';
 import PodcastCard from '../components/PodcastCard';
 import { searchPodcasts, fetchCategories } from '../services/api';
 
 export default function SearchPage() {
+  const pageSize = 12;
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const categoryParam = searchParams.get('category') || '';
@@ -13,6 +14,7 @@ export default function SearchPage() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState(query);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     async function performSearch() {
@@ -28,6 +30,27 @@ export default function SearchPage() {
     }
     performSearch();
   }, [query, categoryParam]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, categoryParam]);
+
+  const totalPages = Math.ceil(podcasts.length / pageSize);
+  const firstPodcastIndex = (currentPage - 1) * pageSize;
+  const visiblePodcasts = podcasts.slice(firstPodcastIndex, firstPodcastIndex + pageSize);
+
+  const paginationItems = totalPages <= 7
+    ? Array.from({ length: totalPages }, (_, index) => index + 1)
+    : currentPage <= 4
+      ? [1, 2, 3, 4, 5, 'ellipsis-end', totalPages]
+      : currentPage >= totalPages - 3
+        ? [1, 'ellipsis-start', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+        : [1, 'ellipsis-start', currentPage - 1, currentPage, currentPage + 1, 'ellipsis-end', totalPages];
+
+  const changePage = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -73,11 +96,50 @@ export default function SearchPage() {
           Nenhum podcast encontrado para a busca. Tente buscar por outros termos!
         </div>
       ) : (
-        <div className="poster-grid">
-          {podcasts.map((podcast) => (
-            <PodcastCard key={podcast.id} podcast={podcast} />
-          ))}
-        </div>
+        <>
+          <div className="poster-grid">
+            {visiblePodcasts.map((podcast) => (
+              <PodcastCard key={podcast.id} podcast={podcast} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <nav className="pagination" aria-label="Paginação de podcasts">
+              <button
+                className="pagination-button pagination-arrow"
+                onClick={() => changePage(currentPage - 1)}
+                disabled={currentPage === 1}
+                aria-label="Página anterior"
+              >
+                <ChevronLeft size={18} />
+              </button>
+
+              {paginationItems.map((item) => (
+                typeof item === 'number' ? (
+                  <button
+                    key={item}
+                    className={`pagination-button ${item === currentPage ? 'active' : ''}`}
+                    onClick={() => changePage(item)}
+                    aria-current={item === currentPage ? 'page' : undefined}
+                  >
+                    {item}
+                  </button>
+                ) : (
+                  <span key={item} className="pagination-ellipsis" aria-hidden="true">...</span>
+                )
+              ))}
+
+              <button
+                className="pagination-button pagination-arrow"
+                onClick={() => changePage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                aria-label="Próxima página"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </nav>
+          )}
+        </>
       )}
     </div>
   );

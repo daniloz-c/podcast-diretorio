@@ -321,6 +321,56 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 40px;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.pagination-button {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.pagination-button:hover:not(:disabled) {
+  border-color: var(--accent-green);
+  color: var(--text-primary);
+}
+
+.pagination-button.active {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: #000000;
+}
+
+.pagination-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.pagination-ellipsis {
+  width: 20px;
+  color: var(--text-muted);
+  text-align: center;
+  font-weight: 600;
+}
+
+.pagination-arrow {
+  color: var(--text-primary);
+}
+
 .poster-card {
   position: relative;
   border-radius: var(--radius-md);
