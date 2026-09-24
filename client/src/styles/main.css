@@ -442,6 +442,24 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   gap: 4px;
   border: 1px solid var(--border-color);
+  z-index: 2;
+}
+
+.rank-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #00e054 0%, #00b344 100%);
+  color: #000000;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 2px 8px rgba(0, 224, 84, 0.4);
+  z-index: 2;
 }
 
 /* Podcast Detail Page */

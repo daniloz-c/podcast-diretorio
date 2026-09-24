@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Heart, Star, Play } from 'lucide-react';
 import { isFavorited, toggleFavorite } from '../services/socialService';
 
-export default function PodcastCard({ podcast }) {
+export default function PodcastCard({ podcast, rank }) {
   const [fav, setFav] = useState(() => isFavorited(podcast.id));
 
   const handleFavoriteClick = (e) => {
@@ -19,6 +19,12 @@ export default function PodcastCard({ podcast }) {
     <Link to={`/podcast/${podcast.id}`} className="poster-card">
       <img src={coverUrl} alt={podcast.title} className="poster-image" loading="lazy" />
       
+      {rank && (
+        <div className="rank-badge">
+          #{rank}
+        </div>
+      )}
+
       <div className="rating-badge">
         <Star size={12} fill="#00e054" color="#00e054" />
         <span>4.8</span>

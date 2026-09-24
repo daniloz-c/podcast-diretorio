@@ -21,7 +21,7 @@ export default function PodcastPage() {
   const { id } = useParams();
   const [podcast, setPodcast] = useState(null);
   const [episodes, setEpisodes] = useState([]);
-  const [sortAsc, setSortAsc] = useState(true); // Default: Ordem Crescente (do mais antigo para o mais novo)
+  const [sortAsc, setSortAsc] = useState(false); // Requisito: Padrão = Mais Recentes Primeiro (do mais novo para o mais antigo)
   const [loading, setLoading] = useState(true);
 
   const { playEpisode, currentEpisode, isPlaying } = useAudio();
@@ -40,11 +40,11 @@ export default function PodcastPage() {
 
       const eps = await fetchEpisodesByFeedId(id, podcastData?.feedUrl || null);
 
-      // Sort ascending: oldest → newest (requisito do ideia.md)
+      // Requisito: QUANDO ABRIR A PÁGINA DE UM PODCAST APRESENTAR OS EPISÓDEOS MAIS RECENTES
       const sorted = [...eps].sort((a, b) => {
         const timeA = a.datePublished || 0;
         const timeB = b.datePublished || 0;
-        return timeA - timeB;
+        return timeB - timeA; // Mais recente primeiro
       });
 
       setEpisodes(sorted);
@@ -167,15 +167,15 @@ export default function PodcastPage() {
       <h2 className="section-title">
         <span>Episódios ({episodes.length})</span>
 
-        {/* Toggle sort order: Ordem Crescente (Mais antigo primeiro) */}
+        {/* Toggle sort order */}
         <button
           className="btn btn-secondary"
           onClick={toggleSortOrder}
-          style={{ fontSize: '0.8rem', padding: '4px 10px' }}
+          style={{ fontSize: '0.8rem', padding: '6px 12px' }}
           title="Alterar ordenação dos episódios"
         >
           <ArrowUpDown size={14} color="var(--accent-green)" />
-          {sortAsc ? 'Ordem Crescente (Mais antigo para mais novo)' : 'Ordem Decrescente (Mais novo para mais antigo)'}
+          {sortAsc ? 'Ordenação: Mais Antigos Primeiro (#1)' : 'Ordenação: Mais Recentes Primeiro (Padrão)'}
         </button>
       </h2>
 
@@ -185,8 +185,15 @@ export default function PodcastPage() {
           return (
             <div key={ep.id} className="episode-item">
               <div className="episode-main">
-                <div style={{ fontSize: '0.75rem', color: 'var(--accent-green)', fontWeight: 700, marginBottom: 4 }}>
-                  EPISÓDIO #{sortAsc ? index + 1 : episodes.length - index}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--accent-green)', fontWeight: 700 }}>
+                    EPISÓDIO #{sortAsc ? index + 1 : episodes.length - index}
+                  </span>
+                  {!sortAsc && index === 0 && (
+                    <span style={{ backgroundColor: 'rgba(0, 224, 84, 0.15)', color: 'var(--accent-green)', fontSize: '0.65rem', padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontWeight: 700 }}>
+                      MAIS RECENTE
+                    </span>
+                  )}
                 </div>
                 <Link to={`/episode/${ep.id}`} className="episode-title">
                   {ep.title}

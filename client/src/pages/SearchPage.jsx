@@ -87,6 +87,35 @@ export default function SearchPage() {
             Buscar
           </button>
         </form>
+
+        {/* Quick Category Filters */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
+          <button
+            className={`btn ${!categoryParam && !query ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchParams({})}
+            style={{ borderRadius: 'var(--radius-full)', fontSize: '0.8rem', padding: '4px 12px' }}
+          >
+            Todos
+          </button>
+          {categories.map((cat) => {
+            const isActive = categoryParam.toLowerCase() === cat.name.toLowerCase();
+            return (
+              <button
+                key={cat.id}
+                className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setSearchParams({ category: cat.name })}
+                style={{ 
+                  borderRadius: 'var(--radius-full)', 
+                  fontSize: '0.8rem', 
+                  padding: '4px 12px',
+                  borderColor: cat.name.includes('Tecnologia') ? 'rgba(64, 188, 244, 0.4)' : cat.name.includes('Cultura Pop') ? 'rgba(255, 128, 0, 0.4)' : undefined
+                }}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {loading ? (

@@ -43,80 +43,87 @@ function normalizeiTunesPodcast(item) {
   };
 }
 
-// Deduplicar por título normalizado — elimina feeds distintos do mesmo podcast
-// Mantém o com maior trackCount (mais episódios = feed principal)
-function deduplicateByTitle(items) {
+// Função para bloquear podcasts indesejados / spam de feeds
+function isBlockedPodcast(p) {
+  const author = (p.artistName || p.author || p.ownerName || '').toLowerCase();
+  const title = (p.collectionName || p.trackName || p.title || '').toLowerCase();
+  
+  // Requisito: Eliminar podcasts feitos por Terceirona Oficial
+  if (author.includes('terceirona') || title.includes('terceirona')) {
+    return true;
+  }
+  return false;
+}
+
+// Requisito: ELIMINAR PODCAST SEM EPISÓDIOS E PODCASTS BLOQUEADOS
+// Deduplicar por título normalizado e filtrar podcasts com trackCount > 0
+function deduplicateAndFilter(items) {
   const seen = new Map();
   for (const p of items) {
+    // Elimina podcasts bloqueados (ex: Terceirona Oficial)
+    if (isBlockedPodcast(p)) {
+      continue;
+    }
+
+    // Elimina podcasts sem episódios (trackCount <= 0 ou inexistente)
+    const trackCount = p.trackCount || 0;
+    if (trackCount <= 0) {
+      continue;
+    }
+
     // Normalizar: lowercase, sem acentos/pontuação, primeiros 30 chars
     const normalizedTitle = (p.collectionName || p.trackName || '')
       .toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
       .replace(/[^a-z0-9]/g, '')
       .substring(0, 30);
+
+    if (!normalizedTitle) continue;
+
     const existing = seen.get(normalizedTitle);
-    if (!existing || (p.trackCount || 0) > (existing.trackCount || 0)) {
+    if (!existing || trackCount > (existing.trackCount || 0)) {
       seen.set(normalizedTitle, p);
     }
   }
   return [...seen.values()];
 }
 
-// Filtrar podcasts claramente não-brasileiros (sem feedUrl ou country incorreto)
-// Mantém podcasts com country BRA ou sem country (iTunes às vezes omite)
-function filterBrazilianOnly(items) {
-  return items.filter(p => {
-    const country = (p.country || '').toUpperCase();
-    return !country || country === 'BRA' || country === 'BR';
-  });
-}
-
-
 // ─────────────────────────────────────────────
-// PodcastIndex headers helper (optional, for when keys are provided)
+// IDs de podcasts brasileiros ordenados pelos mais escutados (Spotify / Apple Charts Brasil)
 // ─────────────────────────────────────────────
-function getPodcastIndexHeaders() {
-  const apiKey = process.env.PODCAST_INDEX_KEY || '';
-  const apiSecret = process.env.PODCAST_INDEX_SECRET || '';
-  if (!apiKey || !apiSecret) return null;
-  const apiHeaderTime = Math.floor(Date.now() / 1000);
-  const hash = crypto.createHash('sha1').update(apiKey + apiSecret + apiHeaderTime).digest('hex');
-  return {
-    'User-Agent': 'Podboxd/1.0',
-    'X-Auth-Date': String(apiHeaderTime),
-    'X-Auth-Key': apiKey,
-    'Authorization': hash,
-  };
-}
-
-// IDs de podcasts brasileiros conhecidos no iTunes — sem duplicatas
-const BR_PODCAST_IDS = [
-  1477406521, // O Assunto — G1
-  381816509,  // NerdCast — Jovem Nerd
-  1533526944, // Podpah
-  504897783,  // Braincast — B9
-  1133325943, // Hipsters Ponto Tech — Alura
-  996967108,  // Xadrez Verbal
-  1583050574, // Ciência Sem Fim — Estúdios Flow
-  1492958937, // Modus Operandi
-  1437955740, // Flow Podcast
-  1802248733, // Mano a Mano — Mano Brown
-  1480878918, // Vozes do Rádio
-  1410154502, // Inteligência Ltda
-  1441935321, // Café da Manhã — Folha
-  1572970113, // Papo de Segunda
-  1659038721, // História em Meia Hora
-  1522979073, // Rádio Novelo Apresenta
+const BR_TOP_PODCAST_IDS = [
+  1533526944, // #1 Podpah — Igão e Mítico
+  1466327128, // #2 Flow Podcast — Grupo Flow (Feed oficial ativo com +1470 episódios)
+  381816509,  // #3 NerdCast — Jovem Nerd (Cultura Pop & TI)
+  1477406521, // #4 O Assunto — Natuza Nery / G1
+  1566207871, // #5 Inteligência Ltda. — Rogério Vilela
+  1802248733, // #6 Mano a Mano — Mano Brown
+  1492958937, // #7 Modus Operandi — Carol Moreira e Mabê
+  1498261768, // #8 Não Inviabilize — Déia Freitas
+  1492466080, // #9 Psicologia na Prática — Alana Anijar
+  1133325943, // #10 Hipsters Ponto Tech — Alura (Tecnologia / TI)
+  1583050574, // #11 Ciência Sem Fim — Sérgio Sacani
+  504897783,  // #12 Braincast — B9 (Tecnologia / Cultura)
+  996967108,  // #13 Xadrez Verbal — Filipe Figueiredo e Matias Pinto
+  1653631116, // #14 Rádio Novelo Apresenta — Rádio Novelo
+  1493602027, // #15 História em Meia Hora — Vítor Soares
+  1456306439, // #16 Papo de Segunda — GNT
 ];
 
+// Mapa de ranking para priorizar os mais escutados
+const RANK_MAP = new Map();
+BR_TOP_PODCAST_IDS.forEach((id, index) => {
+  RANK_MAP.set(Number(id), index + 1);
+});
+
 // ─────────────────────────────────────────────
-// GET /podcasts/trending — Top podcasts brasileiros via lookup direto no iTunes
+// GET /podcasts/trending — Top podcasts brasileiros ordenados por mais escutados
 // ─────────────────────────────────────────────
 router.get('/podcasts/trending', async (req, res) => {
   try {
-    const [featuredResponse, ...discoveryResponses] = await Promise.all([
+    const [featuredResponse, discoveryResponse1, discoveryResponse2] = await Promise.all([
       axios.get(
-        `${ITUNES_BASE}/lookup?id=${BR_PODCAST_IDS.join(',')}&entity=podcast`,
+        `${ITUNES_BASE}/lookup?id=${BR_TOP_PODCAST_IDS.join(',')}&entity=podcast`,
         { timeout: 10000 }
       ),
       axios.get(
@@ -131,11 +138,27 @@ router.get('/podcasts/trending', async (req, res) => {
 
     const featured = (featuredResponse.data?.results || [])
       .filter(r => r.wrapperType === 'track' || r.kind === 'podcast');
-    const discovered = discoveryResponses.flatMap(response => response.data?.results || [])
-      .filter(r => r.wrapperType === 'track' || r.kind === 'podcast');
-    const results = deduplicateByTitle([...featured, ...discovered]);
-    // Ordenar pelo número de episódios e manter a ordem original dos IDs como tie-breaker
-    const sorted = results.sort((a, b) => (b.trackCount || 0) - (a.trackCount || 0));
+    const discovered = [
+      ...(discoveryResponse1.data?.results || []),
+      ...(discoveryResponse2.data?.results || [])
+    ].filter(r => r.wrapperType === 'track' || r.kind === 'podcast');
+
+    // Eliminar podcasts sem episódios e deduplicar
+    const results = deduplicateAndFilter([...featured, ...discovered]);
+
+    // Ordenar: primeiro pelo ranking oficial dos mais ouvidos, depois por quantidade de episódios
+    const sorted = results.sort((a, b) => {
+      const idA = Number(a.collectionId || a.trackId);
+      const idB = Number(b.collectionId || b.trackId);
+      const rankA = RANK_MAP.get(idA) || 999;
+      const rankB = RANK_MAP.get(idB) || 999;
+
+      if (rankA !== rankB) {
+        return rankA - rankB; // Ordem dos mais escutados primeiro (1, 2, 3, 4, 5...)
+      }
+      return (b.trackCount || 0) - (a.trackCount || 0);
+    });
+
     return res.json({ status: 'true', feeds: sorted.map(normalizeiTunesPodcast) });
   } catch (err) {
     console.warn('[iTunes Trending] Erro:', err.message);
@@ -143,23 +166,41 @@ router.get('/podcasts/trending', async (req, res) => {
   }
 });
 
-
 // ─────────────────────────────────────────────
-// GET /podcasts/search?q=termo — Busca via iTunes (país BR)
+// GET /podcasts/search?q=termo — Busca via iTunes (país BR) com suporte a categorias especiais
 // ─────────────────────────────────────────────
 router.get('/podcasts/search', async (req, res) => {
   const q = (req.query.q || '').toString().trim();
   if (!q) return res.redirect('/api/podcasts/trending');
 
+  // Mapeamento semântico de categorias especiais: Tecnologia (TI) e Cultura Pop (Geek/Nerd)
+  let itunesSearchTerm = q;
+  const lowerQ = q.toLowerCase();
+
+  if (lowerQ.includes('tecnologia') || lowerQ === 'ti' || lowerQ.includes('programação')) {
+    itunesSearchTerm = 'podcast tecnologia programacao ti brasil';
+  } else if (lowerQ.includes('cultura pop') || lowerQ.includes('geek') || lowerQ.includes('nerd')) {
+    itunesSearchTerm = 'podcast cultura pop geek nerd cinema brasil';
+  }
+
   try {
     const response = await axios.get(
-      `${ITUNES_BASE}/search?term=${encodeURIComponent(q)}&country=BR&media=podcast&entity=podcast&limit=100`,
+      `${ITUNES_BASE}/search?term=${encodeURIComponent(itunesSearchTerm)}&country=BR&media=podcast&entity=podcast&limit=100`,
       { timeout: 8000 }
     );
-    const raw = (response.data?.results || []).filter(r => r.wrapperType === 'track');
-    // Deduplicar por título normalizado
-    const results = deduplicateByTitle(raw)
-      .sort((a, b) => (b.trackCount || 0) - (a.trackCount || 0));
+    const raw = (response.data?.results || []).filter(r => r.wrapperType === 'track' || r.kind === 'podcast');
+    
+    // Eliminar podcast sem episódios e deduplicar
+    const results = deduplicateAndFilter(raw)
+      .sort((a, b) => {
+        const idA = Number(a.collectionId || a.trackId);
+        const idB = Number(b.collectionId || b.trackId);
+        const rankA = RANK_MAP.get(idA) || 999;
+        const rankB = RANK_MAP.get(idB) || 999;
+        if (rankA !== rankB) return rankA - rankB;
+        return (b.trackCount || 0) - (a.trackCount || 0);
+      });
+
     return res.json({ status: 'true', feeds: results.map(normalizeiTunesPodcast) });
   } catch (err) {
     console.warn('[iTunes Search] Erro:', err.message);
@@ -192,6 +233,7 @@ router.get('/podcasts/byid', async (req, res) => {
 
 // ─────────────────────────────────────────────
 // GET /episodes/byfeedid?id=:itunesId — Episódios via RSS (feedUrl do iTunes)
+// Requisito: QUANDO ABRIR A PÁGINA DE UM PODCAST APRESENTAR OS EPISÓDEOS MAIS RECENTES (ordem decrescente)
 // ─────────────────────────────────────────────
 router.get('/episodes/byfeedid', async (req, res) => {
   const id = req.query.id;
@@ -235,14 +277,14 @@ router.get('/episodes/byfeedid', async (req, res) => {
         datePublished: pub,
         duration: durationSec,
         enclosureUrl: ep.enclosure?.url || '',
-        feedImage: ep.itunes?.image?.$ ?.href || coverImage,
+        feedImage: ep.itunes?.image?.$?.href || coverImage,
         feedId: Number(id),
         link: ep.link || ''
       };
     });
 
-    // Sort ascending: oldest → newest (conforme requisito do ideia.md)
-    items.sort((a, b) => a.datePublished - b.datePublished);
+    // Requisito: Apresentar os episódios mais recentes primeiro (decrescente de data)
+    items.sort((a, b) => (b.datePublished || 0) - (a.datePublished || 0));
 
     return res.json({ status: 'true', items });
   } catch (err) {
@@ -252,13 +294,11 @@ router.get('/episodes/byfeedid', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────
-// GET /episodes/byid?id=:episodeGuid — Busca episódio pelo GUID
-// (Guardamos isso em memória temporária; por simplicidade retorna vazio)
+// GET /episodes/byid?id=:episodeGuid — Detalhes do episódio
 // ─────────────────────────────────────────────
 router.get('/episodes/byid', async (req, res) => {
   const id = req.query.id;
   if (!id) return res.status(400).json({ error: 'Episode ID required' });
-  // Sem cache local, redirecionamos a busca para o feed do podcast pai
   return res.json({
     status: 'true',
     episode: {
@@ -275,28 +315,23 @@ router.get('/episodes/byid', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────
-// GET /categories — Géneros disponíveis na Apple Podcasts BR
+// GET /categories — Categorias incluindo Tecnologia (TI) e Cultura Pop (Geek/Nerd)
 // ─────────────────────────────────────────────
 router.get('/categories', async (req, res) => {
   return res.json({
     status: 'true',
     categories: [
-      { id: 1303, name: 'Comédia' },
-      { id: 1489, name: 'Notícias' },
-      { id: 1324, name: 'Sociedade e Cultura' },
-      { id: 1304, name: 'Educação' },
-      { id: 1305, name: 'Crianças e Família' },
-      { id: 1316, name: 'Esportes' },
-      { id: 1485, name: 'Arte' },
-      { id: 1301, name: 'Artes Cênicas' },
-      { id: 1487, name: 'Ficção' },
-      { id: 1507, name: 'Jogos' },
-      { id: 1502, name: 'Lazer' },
-      { id: 1314, name: 'Música' },
-      { id: 1488, name: 'Saúde e Bem-Estar' },
-      { id: 1515, name: 'Tecnologia' },
-      { id: 1516, name: 'True Crime' },
-      { id: 1318, name: 'Negócios' },
+      { id: 1515, name: 'Tecnologia', description: 'Podcasts focados na área da TI, programação e inovação' },
+      { id: 1324, name: 'Cultura Pop', description: 'Podcasts sobre universo geek, nerd, cinema, animes e games' },
+      { id: 1303, name: 'Comédia', description: 'Humor, stand-up e bate-papos descontraídos' },
+      { id: 1489, name: 'Notícias', description: 'Jornalismo diário, política e acontecimentos' },
+      { id: 1516, name: 'True Crime', description: 'Investigação criminal e casos misteriosos' },
+      { id: 1304, name: 'Educação', description: 'História, filosofia, ciência e aprendizado' },
+      { id: 1318, name: 'Negócios', description: 'Empreendedorismo, economia e investimentos' },
+      { id: 1316, name: 'Esportes', description: 'Futebol e análises esportivas' },
+      { id: 1314, name: 'Música', description: 'Cultura musical, entrevistas e álbuns' },
+      { id: 1488, name: 'Saúde e Bem-Estar', description: 'Psicologia, autocuidado e mente' },
+      { id: 1487, name: 'Ficção', description: 'Áudiodramas e histórias narradas' }
     ]
   });
 });
