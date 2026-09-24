@@ -114,11 +114,26 @@ const BR_PODCAST_IDS = [
 // ─────────────────────────────────────────────
 router.get('/podcasts/trending', async (req, res) => {
   try {
-    const response = await axios.get(
-      `${ITUNES_BASE}/lookup?id=${BR_PODCAST_IDS.join(',')}&entity=podcast`,
-      { timeout: 10000 }
-    );
-    const results = (response.data?.results || []).filter(r => r.wrapperType === 'track' || r.kind === 'podcast');
+    const [featuredResponse, ...discoveryResponses] = await Promise.all([
+      axios.get(
+        `${ITUNES_BASE}/lookup?id=${BR_PODCAST_IDS.join(',')}&entity=podcast`,
+        { timeout: 10000 }
+      ),
+      axios.get(
+        `${ITUNES_BASE}/search?term=podcast%20brasil&country=BR&media=podcast&entity=podcast&limit=100`,
+        { timeout: 10000 }
+      ),
+      axios.get(
+        `${ITUNES_BASE}/search?term=podcast%20brasileiro&country=BR&media=podcast&entity=podcast&limit=100`,
+        { timeout: 10000 }
+      )
+    ]);
+
+    const featured = (featuredResponse.data?.results || [])
+      .filter(r => r.wrapperType === 'track' || r.kind === 'podcast');
+    const discovered = discoveryResponses.flatMap(response => response.data?.results || [])
+      .filter(r => r.wrapperType === 'track' || r.kind === 'podcast');
+    const results = deduplicateByTitle([...featured, ...discovered]);
     // Ordenar pelo número de episódios e manter a ordem original dos IDs como tie-breaker
     const sorted = results.sort((a, b) => (b.trackCount || 0) - (a.trackCount || 0));
     return res.json({ status: 'true', feeds: sorted.map(normalizeiTunesPodcast) });
@@ -138,7 +153,7 @@ router.get('/podcasts/search', async (req, res) => {
 
   try {
     const response = await axios.get(
-      `${ITUNES_BASE}/search?term=${encodeURIComponent(q)}&country=BR&media=podcast&limit=30`,
+      `${ITUNES_BASE}/search?term=${encodeURIComponent(q)}&country=BR&media=podcast&entity=podcast&limit=100`,
       { timeout: 8000 }
     );
     const raw = (response.data?.results || []).filter(r => r.wrapperType === 'track');
