@@ -1,0 +1,609 @@
+{
+  "nodes": [
+    {
+      "id": "server/src/index.js",
+      "label": "Express Server Entrypoint",
+      "type": "code",
+      "community": 0,
+      "community_name": "Backend & Data Ingestion",
+      "source_file": "server/src/index.js",
+      "description": "Inicializa o Express na porta 5000 com CORS, middlewares e rotas /api."
+    },
+    {
+      "id": "server/src/routes/podcastindex.js",
+      "label": "Podcast & Episode Routes",
+      "type": "code",
+      "community": 0,
+      "community_name": "Backend & Data Ingestion",
+      "source_file": "server/src/routes/podcastindex.js",
+      "description": "Rotas de Trending (Top 5 BR), Search por texto/categoria (TI e Cultura Pop), ById e busca de episódios via RSS."
+    },
+    {
+      "id": "server/src/routes/podcastindex.js:isBlockedPodcast",
+      "label": "isBlockedPodcast (Filter)",
+      "type": "code",
+      "community": 0,
+      "community_name": "Backend & Data Ingestion",
+      "source_file": "server/src/routes/podcastindex.js",
+      "description": "Filtra e bloqueia podcasts indesejados e feeds de spam como Terceirona Oficial."
+    },
+    {
+      "id": "server/src/routes/podcastindex.js:deduplicateAndFilter",
+      "label": "deduplicateAndFilter",
+      "type": "code",
+      "community": 0,
+      "community_name": "Backend & Data Ingestion",
+      "source_file": "server/src/routes/podcastindex.js",
+      "description": "Remove duplicatas de feeds homônimos selecionando o feed oficial ativo com trackCount > 0."
+    },
+    {
+      "id": "server/src/routes/podcastindex.js:BR_TOP_PODCAST_IDS",
+      "label": "BR_TOP_PODCAST_IDS Ranking",
+      "type": "code",
+      "community": 0,
+      "community_name": "Backend & Data Ingestion",
+      "source_file": "server/src/routes/podcastindex.js",
+      "description": "Ranking prioritário dos podcasts brasileiros mais ouvidos (Podpah, Flow, NerdCast, O Assunto, etc.)."
+    },
+    {
+      "id": "iTunesSearchAPI",
+      "label": "Apple Podcasts / iTunes Search API",
+      "type": "service",
+      "community": 0,
+      "community_name": "Backend & Data Ingestion",
+      "source_file": "external",
+      "description": "API pública da Apple para metadados, autores, capas e feeds RSS de podcasts."
+    },
+    {
+      "id": "RSSParser",
+      "label": "RSS Parser Engine",
+      "type": "service",
+      "community": 0,
+      "community_name": "Backend & Data Ingestion",
+      "source_file": "server/src/routes/podcastindex.js",
+      "description": "Motor de parsing de feeds XML/RSS para extração de episódios, áudios MP3 e durações."
+    },
+    {
+      "id": "client/src/main.jsx",
+      "label": "React Client Root",
+      "type": "code",
+      "community": 1,
+      "community_name": "State & Frontend Architecture",
+      "source_file": "client/src/main.jsx",
+      "description": "Ponto de entrada React que monta o App e importa o design system CSS."
+    },
+    {
+      "id": "client/src/App.jsx",
+      "label": "App Router & Layout Shell",
+      "type": "code",
+      "community": 1,
+      "community_name": "State & Frontend Architecture",
+      "source_file": "client/src/App.jsx",
+      "description": "Configuração de rotas (BrowserRouter) e encapsulamento com AuthProvider e AudioProvider."
+    },
+    {
+      "id": "client/src/context/AuthContext.jsx",
+      "label": "AuthContext (User State)",
+      "type": "code",
+      "community": 1,
+      "community_name": "State & Frontend Architecture",
+      "source_file": "client/src/context/AuthContext.jsx",
+      "description": "Gerenciador de autenticação, login, cadastro e persistência de sessão de usuário."
+    },
+    {
+      "id": "client/src/context/AudioContext.jsx",
+      "label": "AudioContext (Audio Player State)",
+      "type": "code",
+      "community": 1,
+      "community_name": "State & Frontend Architecture",
+      "source_file": "client/src/context/AudioContext.jsx",
+      "description": "Gerencia o streaming de áudio, episódio em reprodução, play/pause e barra de progresso."
+    },
+    {
+      "id": "client/src/services/api.js",
+      "label": "API Client Service (Axios)",
+      "type": "code",
+      "community": 1,
+      "community_name": "State & Frontend Architecture",
+      "source_file": "client/src/services/api.js",
+      "description": "Camada de comunicação HTTP que consome os endpoints do backend Express."
+    },
+    {
+      "id": "client/src/services/socialService.js",
+      "label": "Social Interactions Service",
+      "type": "code",
+      "community": 1,
+      "community_name": "State & Frontend Architecture",
+      "source_file": "client/src/services/socialService.js",
+      "description": "Gerenciador de likes, favoritos, notas (1-5 estrelas), resenhas, seguidores e listas."
+    },
+    {
+      "id": "client/src/styles/main.css",
+      "label": "Letterboxd Dark Design System",
+      "type": "code",
+      "community": 1,
+      "community_name": "State & Frontend Architecture",
+      "source_file": "client/src/styles/main.css",
+      "description": "Tokens de design, tema escuro #14181c, badges #00e054, tipografia Outfit e grid responsivo."
+    },
+    {
+      "id": "client/src/components/Navbar.jsx",
+      "label": "Navbar Component",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/Navbar.jsx",
+      "description": "Barra de navegação com logotipo Podboxd, busca rápida, navegação e perfil."
+    },
+    {
+      "id": "client/src/components/PodcastCard.jsx",
+      "label": "PodcastCard (Poster Grid Item)",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/PodcastCard.jsx",
+      "description": "Card visual estilo Letterboxd com capa, badge de rank (#1-#5), nota e botão de favoritar."
+    },
+    {
+      "id": "client/src/components/AudioPlayerBar.jsx",
+      "label": "AudioPlayerBar (Fixed Audio Player)",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/AudioPlayerBar.jsx",
+      "description": "Player fixo de áudio com scrubbing de tempo, controle de volume e reprodução contínua."
+    },
+    {
+      "id": "client/src/components/CommentSection.jsx",
+      "label": "CommentSection & Reviews",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/CommentSection.jsx",
+      "description": "Área de comentários e resenhas com suporte a avaliações por estrelas e timestamps."
+    },
+    {
+      "id": "client/src/components/RatingStars.jsx",
+      "label": "RatingStars Component",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/RatingStars.jsx",
+      "description": "Componente de avaliação interativa de 1 a 5 estrelas em verde (#00e054)."
+    },
+    {
+      "id": "client/src/components/ActivityFeed.jsx",
+      "label": "ActivityFeed Component",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/ActivityFeed.jsx",
+      "description": "Feed em tempo real das ações sociais da comunidade (avaliações, comentários, listas)."
+    },
+    {
+      "id": "client/src/components/AuthModal.jsx",
+      "label": "AuthModal Component",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/AuthModal.jsx",
+      "description": "Modal com formulários de login e cadastro de usuários."
+    },
+    {
+      "id": "client/src/components/CreateListModal.jsx",
+      "label": "CreateListModal Component",
+      "type": "code",
+      "community": 2,
+      "community_name": "UI Components & Social Interaction",
+      "source_file": "client/src/components/CreateListModal.jsx",
+      "description": "Modal para criação de coleções e listas temáticas de podcasts."
+    },
+    {
+      "id": "client/src/pages/HomePage.jsx",
+      "label": "HomePage View",
+      "type": "code",
+      "community": 3,
+      "community_name": "Views & Discovery Experience",
+      "source_file": "client/src/pages/HomePage.jsx",
+      "description": "Página inicial exibindo Top 5 podcasts mais escutados, pills de categorias e feed social."
+    },
+    {
+      "id": "client/src/pages/SearchPage.jsx",
+      "label": "SearchPage View",
+      "type": "code",
+      "community": 3,
+      "community_name": "Views & Discovery Experience",
+      "source_file": "client/src/pages/SearchPage.jsx",
+      "description": "Página de busca e catálogo com filtros interativos para Tecnologia (TI), Cultura Pop, etc."
+    },
+    {
+      "id": "client/src/pages/PodcastPage.jsx",
+      "label": "PodcastPage View",
+      "type": "code",
+      "community": 3,
+      "community_name": "Views & Discovery Experience",
+      "source_file": "client/src/pages/PodcastPage.jsx",
+      "description": "Página de detalhes com capa, botões sociais, episódios recentes primeiro e reviews."
+    },
+    {
+      "id": "client/src/pages/EpisodePage.jsx",
+      "label": "EpisodePage View",
+      "type": "code",
+      "community": 3,
+      "community_name": "Views & Discovery Experience",
+      "source_file": "client/src/pages/EpisodePage.jsx",
+      "description": "Página dedicada a um episódio individual com player e comentários."
+    },
+    {
+      "id": "client/src/pages/UserProfilePage.jsx",
+      "label": "UserProfilePage View",
+      "type": "code",
+      "community": 3,
+      "community_name": "Views & Discovery Experience",
+      "source_file": "client/src/pages/UserProfilePage.jsx",
+      "description": "Perfil pessoal exibindo favoritos, podcasts curtidos, listas e estatísticas."
+    },
+    {
+      "id": "client/src/pages/CustomListsPage.jsx",
+      "label": "CustomListsPage View",
+      "type": "code",
+      "community": 3,
+      "community_name": "Views & Discovery Experience",
+      "source_file": "client/src/pages/CustomListsPage.jsx",
+      "description": "Página para explorar e criar listas e seleções de podcasts da comunidade."
+    },
+    {
+      "id": "ideia.md",
+      "label": "Project Requirements (ideia.md)",
+      "type": "document",
+      "community": 4,
+      "community_name": "Product Spec & Business Rules",
+      "source_file": "ideia.md",
+      "description": "Especificação dos requisitos: Letterboxd para podcasts brasileiros, Top 5, ordenação e filtros."
+    }
+  ],
+  "edges": [
+    {
+      "source": "server/src/index.js",
+      "target": "server/src/routes/podcastindex.js",
+      "relation": "mounts_routes",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "server/src/routes/podcastindex.js",
+      "target": "server/src/routes/podcastindex.js:isBlockedPodcast",
+      "relation": "sanitizes_with",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "server/src/routes/podcastindex.js",
+      "target": "server/src/routes/podcastindex.js:deduplicateAndFilter",
+      "relation": "filters_with",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "server/src/routes/podcastindex.js",
+      "target": "server/src/routes/podcastindex.js:BR_TOP_PODCAST_IDS",
+      "relation": "ranks_by",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "server/src/routes/podcastindex.js",
+      "target": "iTunesSearchAPI",
+      "relation": "fetches_metadata",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "server/src/routes/podcastindex.js",
+      "target": "RSSParser",
+      "relation": "parses_episodes",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/main.jsx",
+      "target": "client/src/App.jsx",
+      "relation": "renders_root",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/main.jsx",
+      "target": "client/src/styles/main.css",
+      "relation": "imports_styles",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/context/AuthContext.jsx",
+      "relation": "provides_auth",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/context/AudioContext.jsx",
+      "relation": "provides_audio",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/components/Navbar.jsx",
+      "relation": "renders_layout",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/components/AudioPlayerBar.jsx",
+      "relation": "renders_player",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/components/AuthModal.jsx",
+      "relation": "manages_modal",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/components/CreateListModal.jsx",
+      "relation": "manages_modal",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/pages/HomePage.jsx",
+      "relation": "routes_to",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/pages/SearchPage.jsx",
+      "relation": "routes_to",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/pages/PodcastPage.jsx",
+      "relation": "routes_to",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/pages/EpisodePage.jsx",
+      "relation": "routes_to",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/pages/UserProfilePage.jsx",
+      "relation": "routes_to",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/App.jsx",
+      "target": "client/src/pages/CustomListsPage.jsx",
+      "relation": "routes_to",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/HomePage.jsx",
+      "target": "client/src/services/api.js",
+      "relation": "fetches_top5_and_categories",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/HomePage.jsx",
+      "target": "client/src/components/PodcastCard.jsx",
+      "relation": "renders_top5_cards",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/HomePage.jsx",
+      "target": "client/src/components/ActivityFeed.jsx",
+      "relation": "renders_feed",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/SearchPage.jsx",
+      "target": "client/src/services/api.js",
+      "relation": "searches_podcasts",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/SearchPage.jsx",
+      "target": "client/src/components/PodcastCard.jsx",
+      "relation": "renders_results",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/PodcastPage.jsx",
+      "target": "client/src/services/api.js",
+      "relation": "fetches_podcast_and_episodes",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/PodcastPage.jsx",
+      "target": "client/src/services/socialService.js",
+      "relation": "manages_social_actions",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/PodcastPage.jsx",
+      "target": "client/src/components/RatingStars.jsx",
+      "relation": "renders_rating",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/PodcastPage.jsx",
+      "target": "client/src/components/CommentSection.jsx",
+      "relation": "renders_comments",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/PodcastPage.jsx",
+      "target": "client/src/context/AudioContext.jsx",
+      "relation": "plays_audio",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/EpisodePage.jsx",
+      "target": "client/src/services/api.js",
+      "relation": "fetches_episode",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/EpisodePage.jsx",
+      "target": "client/src/context/AudioContext.jsx",
+      "relation": "triggers_playback",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/EpisodePage.jsx",
+      "target": "client/src/components/CommentSection.jsx",
+      "relation": "renders_comments",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/UserProfilePage.jsx",
+      "target": "client/src/services/socialService.js",
+      "relation": "fetches_user_data",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/pages/CustomListsPage.jsx",
+      "target": "client/src/services/socialService.js",
+      "relation": "fetches_custom_lists",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/components/PodcastCard.jsx",
+      "target": "client/src/services/socialService.js",
+      "relation": "toggles_favorite",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/components/CommentSection.jsx",
+      "target": "client/src/services/socialService.js",
+      "relation": "saves_comments",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/components/Navbar.jsx",
+      "target": "client/src/context/AuthContext.jsx",
+      "relation": "reads_auth_state",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "client/src/services/api.js",
+      "target": "server/src/routes/podcastindex.js",
+      "relation": "http_api_requests",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "ideia.md",
+      "target": "client/src/pages/HomePage.jsx",
+      "relation": "specifies_top5",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    },
+    {
+      "source": "ideia.md",
+      "target": "server/src/routes/podcastindex.js",
+      "relation": "specifies_filters_and_order",
+      "confidence": "EXTRACTED",
+      "weight": 1
+    }
+  ],
+  "hyperedges": [],
+  "communities": {
+    "0": [
+      "server/src/index.js",
+      "server/src/routes/podcastindex.js",
+      "server/src/routes/podcastindex.js:isBlockedPodcast",
+      "server/src/routes/podcastindex.js:deduplicateAndFilter",
+      "server/src/routes/podcastindex.js:BR_TOP_PODCAST_IDS",
+      "iTunesSearchAPI",
+      "RSSParser"
+    ],
+    "1": [
+      "client/src/main.jsx",
+      "client/src/App.jsx",
+      "client/src/context/AuthContext.jsx",
+      "client/src/context/AudioContext.jsx",
+      "client/src/services/api.js",
+      "client/src/services/socialService.js",
+      "client/src/styles/main.css"
+    ],
+    "2": [
+      "client/src/components/Navbar.jsx",
+      "client/src/components/PodcastCard.jsx",
+      "client/src/components/AudioPlayerBar.jsx",
+      "client/src/components/CommentSection.jsx",
+      "client/src/components/RatingStars.jsx",
+      "client/src/components/ActivityFeed.jsx",
+      "client/src/components/AuthModal.jsx",
+      "client/src/components/CreateListModal.jsx"
+    ],
+    "3": [
+      "client/src/pages/HomePage.jsx",
+      "client/src/pages/SearchPage.jsx",
+      "client/src/pages/PodcastPage.jsx",
+      "client/src/pages/EpisodePage.jsx",
+      "client/src/pages/UserProfilePage.jsx",
+      "client/src/pages/CustomListsPage.jsx"
+    ],
+    "4": [
+      "ideia.md"
+    ]
+  },
+  "community_labels": {
+    "0": "Backend & Data Ingestion",
+    "1": "State & Frontend Architecture",
+    "2": "UI Components & Social Interaction",
+    "3": "Views & Discovery Experience",
+    "4": "Product Spec & Business Rules"
+  },
+  "meta": {
+    "total_nodes": 29,
+    "total_edges": 41,
+    "total_communities": 5,
+    "generated_at": "2026-09-24T23:46:47.660Z"
+  }
+}
