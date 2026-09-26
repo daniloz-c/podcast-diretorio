@@ -33,7 +33,7 @@ export default function AudioPlayerBar() {
           </button>
           
           <button className="btn btn-primary" style={{ width: 42, height: 42, borderRadius: '50%', padding: 0 }} onClick={togglePlayPause}>
-            {isPlaying ? <Pause size={20} fill="#000" /> : <Play size={20} fill="#000" style={{ marginLeft: 2 }} />}
+            {isPlaying ? <Pause size={20} fill="#ffffff" /> : <Play size={20} fill="#ffffff" style={{ marginLeft: 2 }} />}
           </button>
 
           <button className="btn-icon" style={{ width: 32, height: 32 }} onClick={() => seek(Math.min(duration, currentTime + 15))}>

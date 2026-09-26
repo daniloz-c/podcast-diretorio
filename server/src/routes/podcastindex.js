@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import axios from 'axios';
 import Parser from 'rss-parser';
-import crypto from 'crypto';
+import { getPodcasts, getPodcastByItunesId, insertPodcasts, getEpisodes, insertEpisodes, getCategories } from '../config/database.js';
 
 const router = Router();
 const rssParser = new Parser({
@@ -121,6 +121,33 @@ BR_TOP_PODCAST_IDS.forEach((id, index) => {
 // ─────────────────────────────────────────────
 router.get('/podcasts/trending', async (req, res) => {
   try {
+    // Try cache first
+    const cached = getPodcasts();
+    if (cached && cached.length > 0) {
+      const normalized = cached.map(p => ({
+        id: p.itunes_id,
+        title: p.title,
+        author: p.author,
+        ownerName: p.owner_name,
+        description: p.description,
+        image: p.image,
+        artwork: p.artwork,
+        link: p.link,
+        feedUrl: p.feed_url,
+        language: p.language,
+        itunesId: p.itunes_id,
+        trackCount: 0,
+        primaryGenreName: '',
+        categories: { 1: 'Podcasts' },
+        genres: [],
+        country: p.country,
+        trendScore: p.trend_score,
+        source: p.source
+      }));
+      return res.json({ status: 'true', feeds: normalized });
+    }
+
+    // Fallback to iTunes API
     const [featuredResponse, discoveryResponse1, discoveryResponse2] = await Promise.all([
       axios.get(
         `${ITUNES_BASE}/lookup?id=${BR_TOP_PODCAST_IDS.join(',')}&entity=podcast`,
@@ -154,12 +181,15 @@ router.get('/podcasts/trending', async (req, res) => {
       const rankB = RANK_MAP.get(idB) || 999;
 
       if (rankA !== rankB) {
-        return rankA - rankB; // Ordem dos mais escutados primeiro (1, 2, 3, 4, 5...)
+        return rankA - rankB;
       }
       return (b.trackCount || 0) - (a.trackCount || 0);
     });
 
-    return res.json({ status: 'true', feeds: sorted.map(normalizeiTunesPodcast) });
+    const normalized = sorted.map(normalizeiTunesPodcast);
+    insertPodcasts(normalized);
+
+    return res.json({ status: 'true', feeds: normalized });
   } catch (err) {
     console.warn('[iTunes Trending] Erro:', err.message);
     return res.status(500).json({ status: 'false', message: 'Falha ao buscar podcasts em destaque' });
@@ -184,6 +214,42 @@ router.get('/podcasts/search', async (req, res) => {
   }
 
   try {
+    // Try cache first - search in local DB
+    const allCached = getPodcasts();
+    if (allCached && allCached.length > 0) {
+      const searchTerm = itunesSearchTerm.toLowerCase();
+      const filtered = allCached.filter(p => 
+        p.title.toLowerCase().includes(searchTerm) ||
+        p.author.toLowerCase().includes(searchTerm) ||
+        (p.description && p.description.toLowerCase().includes(searchTerm))
+      );
+      
+      if (filtered.length > 0) {
+        const normalized = filtered.map(p => ({
+          id: p.itunes_id,
+          title: p.title,
+          author: p.author,
+          ownerName: p.owner_name,
+          description: p.description,
+          image: p.image,
+          artwork: p.artwork,
+          link: p.link,
+          feedUrl: p.feed_url,
+          language: p.language,
+          itunesId: p.itunes_id,
+          trackCount: 0,
+          primaryGenreName: '',
+          categories: { 1: 'Podcasts' },
+          genres: [],
+          country: p.country,
+          trendScore: p.trend_score,
+          source: p.source
+        }));
+        return res.json({ status: 'true', feeds: normalized });
+      }
+    }
+
+    // Fallback to iTunes API
     const response = await axios.get(
       `${ITUNES_BASE}/search?term=${encodeURIComponent(itunesSearchTerm)}&country=BR&media=podcast&entity=podcast&limit=100`,
       { timeout: 8000 }
@@ -201,7 +267,10 @@ router.get('/podcasts/search', async (req, res) => {
         return (b.trackCount || 0) - (a.trackCount || 0);
       });
 
-    return res.json({ status: 'true', feeds: results.map(normalizeiTunesPodcast) });
+    const normalized = results.map(normalizeiTunesPodcast);
+    insertPodcasts(normalized);
+
+    return res.json({ status: 'true', feeds: normalized });
   } catch (err) {
     console.warn('[iTunes Search] Erro:', err.message);
     return res.json({ status: 'false', feeds: [] });
@@ -216,6 +285,32 @@ router.get('/podcasts/byid', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'ID required' });
 
   try {
+    // Try cache first
+    const cached = getPodcastByItunesId(Number(id));
+    if (cached) {
+      return res.json({ status: 'true', feed: {
+        id: cached.itunes_id,
+        title: cached.title,
+        author: cached.author,
+        ownerName: cached.owner_name,
+        description: cached.description,
+        image: cached.image,
+        artwork: cached.artwork,
+        link: cached.link,
+        feedUrl: cached.feed_url,
+        language: cached.language,
+        itunesId: cached.itunes_id,
+        trackCount: 0,
+        primaryGenreName: '',
+        categories: { 1: 'Podcasts' },
+        genres: [],
+        country: cached.country,
+        trendScore: cached.trend_score,
+        source: cached.source
+      }});
+    }
+
+    // Fallback to iTunes API
     const response = await axios.get(
       `${ITUNES_BASE}/lookup?id=${id}`,
       { timeout: 8000 }
@@ -223,7 +318,9 @@ router.get('/podcasts/byid', async (req, res) => {
     const results = response.data?.results || [];
     const podcast = results.find(r => r.wrapperType === 'track' || r.kind === 'podcast');
     if (podcast) {
-      return res.json({ status: 'true', feed: normalizeiTunesPodcast(podcast) });
+      const normalized = normalizeiTunesPodcast(podcast);
+      insertPodcasts([normalized]);
+      return res.json({ status: 'true', feed: normalized });
     }
   } catch (err) {
     console.warn('[iTunes Lookup] Erro:', err.message);
@@ -233,11 +330,17 @@ router.get('/podcasts/byid', async (req, res) => {
 
 // ─────────────────────────────────────────────
 // GET /episodes/byfeedid?id=:itunesId — Episódios via RSS (feedUrl do iTunes)
-// Requisito: QUANDO ABRIR A PÁGINA DE UM PODCAST APRESENTAR OS EPISÓDEOS MAIS RECENTES (ordem decrescente)
+// Requisito: QUANDO ABRIR A PÁGINA DE UM PODCAST APRESENTAR OS EPISÓDIOS MAIS RECENTES (ordem decrescente)
 // ─────────────────────────────────────────────
 router.get('/episodes/byfeedid', async (req, res) => {
   const id = req.query.id;
   if (!id) return res.status(400).json({ error: 'Feed ID required' });
+
+  // Try cache first
+  const cachedEpisodes = getEpisodes(Number(id));
+  if (cachedEpisodes && cachedEpisodes.length > 0) {
+    return res.json({ status: 'true', items: cachedEpisodes });
+  }
 
   let feedUrl = req.query.feedUrl || null;
 
@@ -286,6 +389,9 @@ router.get('/episodes/byfeedid', async (req, res) => {
     // Requisito: Apresentar os episódios mais recentes primeiro (decrescente de data)
     items.sort((a, b) => (b.datePublished || 0) - (a.datePublished || 0));
 
+    // Cache episodes
+    insertEpisodes(items);
+
     return res.json({ status: 'true', items });
   } catch (err) {
     console.warn('[RSS Parser] Erro ao parsear feed:', err.message);
@@ -293,7 +399,7 @@ router.get('/episodes/byfeedid', async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────
+    // ─────────────────────────────────────────────
 // GET /episodes/byid?id=:episodeGuid — Detalhes do episódio
 // ─────────────────────────────────────────────
 router.get('/episodes/byid', async (req, res) => {
@@ -318,6 +424,15 @@ router.get('/episodes/byid', async (req, res) => {
 // GET /categories — Categorias incluindo Tecnologia (TI) e Cultura Pop (Geek/Nerd)
 // ─────────────────────────────────────────────
 router.get('/categories', async (req, res) => {
+  try {
+    const cached = getCategories();
+    if (cached && cached.length > 0) {
+      return res.json({ status: 'true', categories: cached });
+    }
+  } catch (err) {
+    console.warn('[Cache Categories] Erro:', err.message);
+  }
+
   return res.json({
     status: 'true',
     categories: [

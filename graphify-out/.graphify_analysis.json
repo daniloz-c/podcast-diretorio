@@ -1,0 +1,373 @@
+{
+  "communities": {
+    "0": [
+      "ref_axios",
+      "ref_cors",
+      "ref_crypto",
+      "ref_dotenv",
+      "ref_express",
+      "ref_rss_parser",
+      "server_package",
+      "server_package_dependencies",
+      "server_package_dependencies_axios",
+      "server_package_dependencies_cors",
+      "server_package_dependencies_dotenv",
+      "server_package_dependencies_express",
+      "server_package_dependencies_rss_parser",
+      "server_package_description",
+      "server_package_json_ref_axios",
+      "server_package_main",
+      "server_package_name",
+      "server_package_scripts",
+      "server_package_scripts_dev",
+      "server_package_scripts_start",
+      "server_package_type",
+      "server_package_version",
+      "server_src_config_podcastindex",
+      "server_src_config_podcastindex_getpodcastindexheaders",
+      "server_src_config_podcastindex_mock_episodes",
+      "server_src_config_podcastindex_mock_podcasts",
+      "server_src_index",
+      "server_src_index_app",
+      "server_src_routes_podcastindex",
+      "server_src_routes_podcastindex_br_top_podcast_ids",
+      "server_src_routes_podcastindex_deduplicateandfilter",
+      "server_src_routes_podcastindex_isblockedpodcast",
+      "server_src_routes_podcastindex_normalizeitunespodcast",
+      "server_src_routes_podcastindex_rank_map",
+      "server_src_routes_podcastindex_router",
+      "server_src_routes_podcastindex_rssparser"
+    ],
+    "1": [
+      "client_package",
+      "client_package_dependencies",
+      "client_package_dependencies_axios",
+      "client_package_dependencies_firebase",
+      "client_package_dependencies_lucide_react",
+      "client_package_dependencies_react",
+      "client_package_dependencies_react_dom",
+      "client_package_dependencies_react_router_dom",
+      "client_package_devdependencies",
+      "client_package_devdependencies_oxlint",
+      "client_package_devdependencies_types_react",
+      "client_package_devdependencies_types_react_dom",
+      "client_package_devdependencies_vite",
+      "client_package_devdependencies_vitejs_plugin_react",
+      "client_package_json_ref_axios",
+      "client_package_name",
+      "client_package_private",
+      "client_package_scripts",
+      "client_package_scripts_build",
+      "client_package_scripts_dev",
+      "client_package_scripts_lint",
+      "client_package_scripts_preview",
+      "client_package_type",
+      "client_package_version",
+      "client_src_config_firebase",
+      "client_src_config_firebase_firebaseconfig",
+      "client_vite_config",
+      "ref_firebase",
+      "ref_oxlint",
+      "ref_types_react",
+      "ref_types_react_dom",
+      "ref_vite",
+      "ref_vitejs_plugin_react"
+    ],
+    "2": [
+      "RSSParser",
+      "client/src/App.jsx",
+      "client/src/components/ActivityFeed.jsx",
+      "client/src/components/AudioPlayerBar.jsx",
+      "client/src/components/AuthModal.jsx",
+      "client/src/components/CommentSection.jsx",
+      "client/src/components/CreateListModal.jsx",
+      "client/src/components/Navbar.jsx",
+      "client/src/components/PodcastCard.jsx",
+      "client/src/components/RatingStars.jsx",
+      "client/src/context/AudioContext.jsx",
+      "client/src/context/AuthContext.jsx",
+      "client/src/main.jsx",
+      "client/src/pages/CustomListsPage.jsx",
+      "client/src/pages/EpisodePage.jsx",
+      "client/src/pages/HomePage.jsx",
+      "client/src/pages/PodcastPage.jsx",
+      "client/src/pages/SearchPage.jsx",
+      "client/src/pages/UserProfilePage.jsx",
+      "client/src/services/api.js",
+      "client/src/services/socialService.js",
+      "client/src/styles/main.css",
+      "ideia.md",
+      "server/src/index.js",
+      "server/src/routes/podcastindex.js",
+      "server/src/routes/podcastindex.js:BR_TOP_PODCAST_IDS",
+      "server/src/routes/podcastindex.js:deduplicateAndFilter",
+      "server/src/routes/podcastindex.js:isBlockedPodcast"
+    ],
+    "3": [
+      "client_src_app",
+      "client_src_app_app",
+      "client_src_components_activityfeed",
+      "client_src_components_activityfeed_activityfeed",
+      "client_src_components_authmodal",
+      "client_src_components_authmodal_authmodal",
+      "client_src_components_commentsection",
+      "client_src_components_createlistmodal",
+      "client_src_components_createlistmodal_createlistmodal",
+      "client_src_components_navbar",
+      "client_src_components_navbar_navbar",
+      "client_src_components_ratingstars",
+      "client_src_components_ratingstars_ratingstars",
+      "client_src_context_authcontext",
+      "client_src_context_authcontext_authcontext",
+      "client_src_context_authcontext_authprovider",
+      "client_src_context_authcontext_useauth",
+      "client_src_main",
+      "client_src_pages_customlistspage",
+      "client_src_pages_customlistspage_customlistspage",
+      "client_src_pages_userprofilepage",
+      "client_src_pages_userprofilepage_userprofilepage",
+      "client_src_services_socialservice_getactivityfeed",
+      "client_src_services_socialservice_getuserlists",
+      "client_src_styles_main",
+      "ref_lucide_react",
+      "ref_react",
+      "ref_react_dom"
+    ],
+    "4": [
+      "client_src_components_commentsection_commentsection",
+      "client_src_pages_podcastpage",
+      "client_src_pages_podcastpage_podcastpage",
+      "client_src_pages_podcastpage_podcastpage_loadpodcast",
+      "client_src_services_api",
+      "client_src_services_api_api",
+      "client_src_services_api_fetchepisodesbyfeedid",
+      "client_src_services_api_fetchpodcastbyid",
+      "client_src_services_socialservice",
+      "client_src_services_socialservice_addactivity",
+      "client_src_services_socialservice_createcustomlist",
+      "client_src_services_socialservice_getallreviews",
+      "client_src_services_socialservice_getpodcastrating",
+      "client_src_services_socialservice_getpodcastreviews",
+      "client_src_services_socialservice_getstored",
+      "client_src_services_socialservice_getuserfavorites",
+      "client_src_services_socialservice_initializemocksocialdata",
+      "client_src_services_socialservice_isfavorited",
+      "client_src_services_socialservice_isfollowinguser",
+      "client_src_services_socialservice_isliked",
+      "client_src_services_socialservice_saveratingandreview",
+      "client_src_services_socialservice_setstored",
+      "client_src_services_socialservice_storage_keys",
+      "client_src_services_socialservice_togglefavorite",
+      "client_src_services_socialservice_togglefollowuser",
+      "client_src_services_socialservice_togglelike"
+    ],
+    "5": [
+      "opencode",
+      "opencode_9router_models",
+      "opencode_9router_npm",
+      "opencode_9router_options",
+      "opencode_jarvis_modalities",
+      "opencode_jarvis_name",
+      "opencode_modalities_input",
+      "opencode_modalities_output",
+      "opencode_model",
+      "opencode_models_jarvis",
+      "opencode_options_apikey",
+      "opencode_options_baseurl",
+      "opencode_provider",
+      "opencode_provider_9router",
+      "opencode_schema"
+    ],
+    "6": [
+      "client_src_components_podcastcard",
+      "client_src_components_podcastcard_podcastcard",
+      "client_src_pages_homepage",
+      "client_src_pages_homepage_homepage",
+      "client_src_pages_homepage_homepage_loaddata",
+      "client_src_pages_searchpage",
+      "client_src_pages_searchpage_searchpage",
+      "client_src_pages_searchpage_searchpage_performsearch",
+      "client_src_services_api_fetchcategories",
+      "client_src_services_api_fetchtrendingpodcasts",
+      "client_src_services_api_searchpodcasts",
+      "ref_react_router_dom"
+    ],
+    "7": [
+      "client_src_components_audioplayerbar",
+      "client_src_components_audioplayerbar_audioplayerbar",
+      "client_src_context_audiocontext",
+      "client_src_context_audiocontext_audiocontext",
+      "client_src_context_audiocontext_audioprovider",
+      "client_src_context_audiocontext_useaudio",
+      "client_src_pages_episodepage",
+      "client_src_pages_episodepage_episodepage",
+      "client_src_pages_episodepage_episodepage_loadep",
+      "client_src_services_api_fetchepisodebyid"
+    ],
+    "8": [
+      "client_oxlintrc",
+      "client_oxlintrc_plugins",
+      "client_oxlintrc_rules",
+      "client_oxlintrc_rules_react_only_export_components",
+      "client_oxlintrc_rules_react_rules_of_hooks",
+      "client_oxlintrc_schema"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06507936507936508,
+    "1": 0.0625,
+    "2": 0.10582010582010581,
+    "3": 0.19576719576719576,
+    "4": 0.24,
+    "5": 0.13333333333333333,
+    "6": 0.36363636363636365,
+    "7": 0.3333333333333333,
+    "8": 0.3333333333333333
+  },
+  "gods": [
+    {
+      "id": "ref_react",
+      "label": "react",
+      "degree": 19
+    },
+    {
+      "id": "client_src_services_socialservice_getstored",
+      "label": "getStored()",
+      "degree": 17
+    },
+    {
+      "id": "client_src_pages_podcastpage_podcastpage",
+      "label": "PodcastPage()",
+      "degree": 15
+    },
+    {
+      "id": "ref_lucide_react",
+      "label": "lucide-react",
+      "degree": 15
+    },
+    {
+      "id": "client_src_context_authcontext_useauth",
+      "label": "useAuth()",
+      "degree": 13
+    },
+    {
+      "id": "client/src/App.jsx",
+      "label": "App Router & Layout Shell",
+      "degree": 13
+    },
+    {
+      "id": "ref_react_router_dom",
+      "label": "react-router-dom",
+      "degree": 9
+    },
+    {
+      "id": "client_src_services_socialservice_saveratingandreview",
+      "label": "saveRatingAndReview()",
+      "degree": 8
+    },
+    {
+      "id": "client_src_services_socialservice_setstored",
+      "label": "setStored()",
+      "degree": 8
+    },
+    {
+      "id": "client_src_services_socialservice_togglefavorite",
+      "label": "toggleFavorite()",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Project Requirements (ideia.md)",
+      "target": "Podcast & Episode Routes",
+      "source_files": [
+        "ideia.md",
+        "server/src/routes/podcastindex.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "specifies_filters_and_order",
+      "why": "crosses file types (code ↔ doc); connects across different repos/directories; peripheral node `Project Requirements (ideia.md)` unexpectedly reaches hub `Podcast & Episode Routes`"
+    },
+    {
+      "source": "Project Requirements (ideia.md)",
+      "target": "HomePage View",
+      "source_files": [
+        "ideia.md",
+        "client/src/pages/HomePage.jsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "specifies_top5",
+      "why": "crosses file types (doc ↔ code); connects across different repos/directories; peripheral node `Project Requirements (ideia.md)` unexpectedly reaches hub `HomePage View`"
+    },
+    {
+      "source": "API Client Service (Axios)",
+      "target": "Podcast & Episode Routes",
+      "source_files": [
+        "client/src/services/api.js",
+        "server/src/routes/podcastindex.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "http_api_requests",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "React Client Root",
+      "target": "Letterboxd Dark Design System",
+      "source_files": [
+        "client/src/main.jsx",
+        "client/src/styles/main.css"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "imports_styles",
+      "why": "crosses file types (code ↔ doc)"
+    },
+    {
+      "source": "CreateListModal()",
+      "target": "createCustomList()",
+      "source_files": [
+        "client/src/components/CreateListModal.jsx",
+        "client/src/services/socialService.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `react` connect `Community 3` to `Community 1`, `Community 4`, `Community 6`, `Community 7`?",
+      "why": "High betweenness centrality (0.095) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `lucide-react` connect `Community 3` to `Community 1`, `Community 4`, `Community 6`, `Community 7`?",
+      "why": "High betweenness centrality (0.069) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `axios`, `cors`, `dotenv` to the rest of the system?",
+      "why": "70 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06507936507936508 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0625 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.10582010582010581 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 5` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

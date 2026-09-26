@@ -24,8 +24,8 @@ export default function RatingStars({ rating = 0, onRate = null, size = 18, inte
           >
             <Star
               size={size}
-              fill={isFull ? '#00e054' : isHalf ? 'url(#halfStarGrad)' : 'none'}
-              color={isFull || isHalf ? '#00e054' : '#677b8c'}
+              fill={isFull ? '#00a854' : isHalf ? 'url(#halfStarGrad)' : 'none'}
+              color={isFull || isHalf ? '#00a854' : '#677b8c'}
               strokeWidth={1.5}
             />
           </span>
@@ -35,7 +35,7 @@ export default function RatingStars({ rating = 0, onRate = null, size = 18, inte
       <svg width="0" height="0" style={{ position: 'absolute' }}>
         <defs>
           <linearGradient id="halfStarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="50%" stopColor="#00e054" />
+            <stop offset="50%" stopColor="#00a854" />
             <stop offset="50%" stopColor="transparent" />
           </linearGradient>
         </defs>

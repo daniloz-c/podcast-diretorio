@@ -43,7 +43,7 @@ export default function HomePage() {
       {/* Hero Banner */}
       <div className="hero-banner">
         <div className="hero-text">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, backgroundColor: 'rgba(0, 224, 84, 0.15)', color: 'var(--accent-green)', padding: '4px 12px', borderRadius: 'var(--radius-full)', fontSize: '0.8rem', fontWeight: 700, marginBottom: 12 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, backgroundColor: 'rgba(0, 168, 84, 0.25)', color: 'var(--accent-green)', padding: '4px 12px', borderRadius: 'var(--radius-full)', fontSize: '0.8rem', fontWeight: 700, marginBottom: 12 }}>
             <Flag size={14} /> FOCADO EM PODCASTS BRASILEIROS 🇧🇷
           </div>
           <h1>Guarde, avalie e compartilhe os melhores podcasts do Brasil.</h1>

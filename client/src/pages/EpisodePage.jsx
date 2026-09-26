@@ -67,11 +67,11 @@ export default function EpisodePage() {
             >
               {isCurrent && isPlaying ? (
                 <>
-                  <Pause size={20} fill="#000" /> Pausar Reprodução
+                  <Pause size={20} fill="#ffffff" /> Pausar Reprodução
                 </>
               ) : (
                 <>
-                  <Play size={20} fill="#000" /> Reproduzir Episódio
+                  <Play size={20} fill="#ffffff" /> Reproduzir Episódio
                 </>
               )}
             </button>

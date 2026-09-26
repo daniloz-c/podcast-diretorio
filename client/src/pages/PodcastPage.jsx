@@ -109,7 +109,7 @@ export default function PodcastPage() {
 
         <div className="podcast-info">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-            <span style={{ backgroundColor: 'rgba(0, 224, 84, 0.15)', color: 'var(--accent-green)', padding: '3px 8px', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ backgroundColor: 'rgba(0, 168, 84, 0.2)', color: 'var(--accent-green)', padding: '3px 8px', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
               <Flag size={12} /> PODCAST BRASILEIRO 🇧🇷
             </span>
           </div>
@@ -120,8 +120,8 @@ export default function PodcastPage() {
             <span>Por <strong>{podcast.author || podcast.ownerName}</strong></span>
             <span>•</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Star size={16} fill="#00e054" color="#00e054" />
-              <strong style={{ color: '#00e054' }}>4.8</strong> (1.2k avaliações)
+              <Star size={16} fill="#00a854" color="#00a854" />
+              <strong style={{ color: '#00a854' }}>4.8</strong> (1.2k avaliações)
             </div>
           </div>
 
@@ -140,16 +140,16 @@ export default function PodcastPage() {
               className={`btn ${fav ? 'btn-primary' : 'btn-secondary'}`}
               onClick={handleFavorite}
             >
-              <Heart size={16} fill={fav ? '#000' : 'none'} /> {fav ? 'Favoritado' : 'Favoritar'}
+              <Heart size={16} fill={fav ? '#c27d0a' : 'none'} /> {fav ? 'Favoritado' : 'Favoritar'}
             </button>
 
             {/* Curtir */}
             <button
               className={`btn ${liked ? 'btn-primary' : 'btn-secondary'}`}
               onClick={handleLike}
-              style={liked ? { backgroundColor: 'var(--accent-orange)', color: '#000' } : {}}
+              style={liked ? { backgroundColor: 'var(--accent-orange)', color: '#ffffff' } : {}}
             >
-              <Star size={16} fill={liked ? '#000' : 'none'} /> {liked ? 'Curtido' : 'Curtir'}
+              <Star size={16} fill={liked ? '#c27d0a' : 'none'} /> {liked ? 'Curtido' : 'Curtir'}
             </button>
 
             {/* Seguir */}
@@ -190,7 +190,7 @@ export default function PodcastPage() {
                     EPISÓDIO #{sortAsc ? index + 1 : episodes.length - index}
                   </span>
                   {!sortAsc && index === 0 && (
-                    <span style={{ backgroundColor: 'rgba(0, 224, 84, 0.15)', color: 'var(--accent-green)', fontSize: '0.65rem', padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontWeight: 700 }}>
+                    <span style={{ backgroundColor: 'rgba(0, 168, 84, 0.2)', color: 'var(--accent-green)', fontSize: '0.65rem', padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontWeight: 700 }}>
                       MAIS RECENTE
                     </span>
                   )}
@@ -211,7 +211,7 @@ export default function PodcastPage() {
                 onClick={() => playEpisode(ep, podcast)}
                 style={{ padding: '10px 18px' }}
               >
-                <Play size={16} fill={isCurrent && isPlaying ? '#000' : 'currentColor'} />
+                <Play size={16} fill={isCurrent && isPlaying ? '#ffffff' : 'currentColor'} />
                 {isCurrent && isPlaying ? 'Pausar' : 'Ouvir'}
               </button>
             </div>
