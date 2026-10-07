@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Radio, Compass, List, Activity, User, LogOut, PlusCircle } from 'lucide-react';
+import { Search, Radio, Compass, List, Activity, User, LogOut, PlusCircle, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar({ onOpenCreateList }) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, logout, setIsAuthModalOpen } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -49,6 +51,9 @@ export default function Navbar({ onOpenCreateList }) {
           <Link to="/lists" className={`nav-link ${location.pathname.startsWith('/lists') ? 'active' : ''}`}>
             <List size={16} /> LISTAS
           </Link>
+          <button onClick={toggleTheme} className="nav-link" title="Alternar tema">
+            {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
 
           {currentUser ? (
             <>

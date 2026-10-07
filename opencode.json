@@ -4,7 +4,7 @@
     "9router": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://192.168.1.11:20128/v1",
+        "baseURL": "http://192.168.1.7:20128/v1",
         "apiKey": "sk-4b1e75f11da2c772-zx7m1z-8bd4b7f1"
       },
       "models": {

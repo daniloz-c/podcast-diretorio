@@ -1,0 +1,15 @@
+{
+  "0": "routes/podcastindex.js",
+  "1": "client/package.json",
+  "2": "App Router & Layout Shell",
+  "3": "App.jsx",
+  "4": "socialService.js",
+  "5": "9router",
+  "6": "UserProfilePage.jsx",
+  "7": "Configuração com SQLite (Para Testes)",
+  "8": ".oxlintrc.json",
+  "9": "dependencies",
+  "10": "config/podcastindex.js",
+  "11": "ActivityFeed Component",
+  "12": "Project Requirements (ideia.md)"
+}

@@ -52,6 +52,34 @@ function initSchema() {
     CREATE INDEX IF NOT EXISTS idx_episodes_date_published ON episodes(date_published);
     CREATE INDEX IF NOT EXISTS idx_episodes_podcast_date ON episodes(podcast_id, date_published DESC);
 
+    CREATE TABLE IF NOT EXISTS user_ratings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT NOT NULL,
+      episode_id TEXT NOT NULL,
+      rating INTEGER,
+      comment TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (episode_id) REFERENCES episodes(id) ON DELETE CASCADE,
+      UNIQUE(user_id, episode_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_user_ratings_user ON user_ratings(user_id);
+    CREATE INDEX IF NOT EXISTS idx_user_ratings_episode ON user_ratings(episode_id);
+    CREATE INDEX IF NOT EXISTS idx_user_ratings_date ON user_ratings(created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS watchlist (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT NOT NULL,
+      episode_id TEXT NOT NULL,
+      added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (episode_id) REFERENCES episodes(id) ON DELETE CASCADE,
+      UNIQUE(user_id, episode_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_watchlist_user ON watchlist(user_id);
+    CREATE INDEX IF NOT EXISTS idx_watchlist_episode ON watchlist(episode_id);
+
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY,
       name TEXT NOT NULL,
@@ -171,6 +199,76 @@ function getCategories() {
   return db.prepare('SELECT * FROM categories ORDER BY name').all();
 }
 
+function getRatingByUserAndEpisode(userId, episodeId) {
+  return db.prepare(`
+    SELECT * FROM user_ratings
+    WHERE user_id = ? AND episode_id = ?
+  `).get(userId, episodeId);
+}
+
+function insertRating(userId, episodeId, rating, comment = null) {
+  const stmt = db.prepare(`
+    INSERT OR REPLACE INTO user_ratings (user_id, episode_id, rating, comment, updated_at)
+    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+  `);
+  return stmt.run(userId, episodeId, rating, comment);
+}
+
+function updateRating(userId, episodeId, rating, comment) {
+  const stmt = db.prepare(`
+    UPDATE user_ratings
+    SET rating = ?, comment = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE user_id = ? AND episode_id = ?
+  `);
+  return stmt.run(rating, comment, userId, episodeId);
+}
+
+function deleteRating(userId, episodeId) {
+  const stmt = db.prepare('DELETE FROM user_ratings WHERE user_id = ? AND episode_id = ?');
+  return stmt.run(userId, episodeId);
+}
+
+function getWatchlistByUser(userId) {
+  return db.prepare(`
+    SELECT w.id, w.added_at, e.*
+    FROM watchlist w
+    JOIN episodes e ON w.episode_id = e.id
+    WHERE w.user_id = ?
+    ORDER BY w.added_at DESC
+  `).all(userId);
+}
+
+function addToWatchlist(userId, episodeId) {
+  const stmt = db.prepare(`
+    INSERT OR REPLACE INTO watchlist (user_id, episode_id)
+    VALUES (?, ?)
+  `);
+  return stmt.run(userId, episodeId);
+}
+
+function removeFromWatchlist(userId, episodeId) {
+  const stmt = db.prepare('DELETE FROM watchlist WHERE user_id = ? AND episode_id = ?');
+  return stmt.run(userId, episodeId);
+}
+
+function isInWatchlist(userId, episodeId) {
+  const stmt = db.prepare('SELECT 1 FROM watchlist WHERE user_id = ? AND episode_id = ? LIMIT 1');
+  const result = stmt.get(userId, episodeId);
+  return !!result;
+}
+
+function getRatingsByUser(userId) {
+  return db.prepare(`
+    SELECT u.*, e.id AS episode_id, e.podcast_id, e.title AS episode_title, e.image AS episode_image,
+           p.title AS podcast_title, p.author AS podcast_author
+    FROM user_ratings u
+    JOIN episodes e ON u.episode_id = e.id
+    JOIN podcasts p ON e.podcast_id = p.itunes_id
+    WHERE u.user_id = ?
+    ORDER BY u.created_at DESC
+  `).all(userId);
+}
+
 initSchema();
 
 export {
@@ -181,5 +279,14 @@ export {
   insertPodcasts,
   getEpisodes,
   insertEpisodes,
-  getCategories
+  getCategories,
+  getRatingByUserAndEpisode,
+  insertRating,
+  updateRating,
+  deleteRating,
+  getWatchlistByUser,
+  addToWatchlist,
+  removeFromWatchlist,
+  isInWatchlist,
+  getRatingsByUser
 };

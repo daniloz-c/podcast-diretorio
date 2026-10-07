@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import podcastIndexRoutes from './routes/podcastindex.js';
+import userRoutes from './routes/users.js';
 import { getPodcasts, insertPodcasts, getPodcastByItunesId, getEpisodes, insertEpisodes, getCategories } from './config/database.js';
 
 dotenv.config();
@@ -64,6 +65,7 @@ app.get('/api/cache/categories', (req, res) => {
 
 // API Routes
 app.use('/api', podcastIndexRoutes);
+app.use('/api', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Letterboxd Podcast Server running on http://localhost:${PORT}`);

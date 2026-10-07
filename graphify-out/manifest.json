@@ -24,10 +24,10 @@
     "semantic_hash": "ed0e5f83ec325c98c0ae6d4b1ae3465a"
   },
   "client/src/components/AudioPlayerBar.jsx": {
-    "mtime": 1790377529.3085265,
-    "seen": 1790377731.1157484,
-    "ast_hash": "c010e7f445940c7d9679e00be35e7ea5",
-    "semantic_hash": "c010e7f445940c7d9679e00be35e7ea5"
+    "mtime": 1790379787.983557,
+    "seen": 1790390411.2132835,
+    "ast_hash": "bb0098397b43ff8641f5ad628e9da8de",
+    "semantic_hash": ""
   },
   "client/src/components/AuthModal.jsx": {
     "mtime": 1790377529.3085265,
@@ -60,10 +60,10 @@
     "semantic_hash": "8bdad71b7178c01ef1886ace79c2afb3"
   },
   "client/src/components/RatingStars.jsx": {
-    "mtime": 1790377529.3170207,
-    "seen": 1790377731.115758,
-    "ast_hash": "f4cf917d6c173e54a5fbaad96318b927",
-    "semantic_hash": "f4cf917d6c173e54a5fbaad96318b927"
+    "mtime": 1790379890.054864,
+    "seen": 1790390411.213303,
+    "ast_hash": "270bc7fa7f3c2ece3440effeeda53fe0",
+    "semantic_hash": ""
   },
   "client/src/config/firebase.js": {
     "mtime": 1790377529.3170207,
@@ -96,22 +96,22 @@
     "semantic_hash": "c3d959ef1859a507be21eff20e994d18"
   },
   "client/src/pages/EpisodePage.jsx": {
-    "mtime": 1790377529.3327577,
-    "seen": 1790377731.1157677,
-    "ast_hash": "a78c260c9fb22e0d6fa21a0d0a71e6e5",
-    "semantic_hash": "a78c260c9fb22e0d6fa21a0d0a71e6e5"
+    "mtime": 1790379922.0904536,
+    "seen": 1790390411.21332,
+    "ast_hash": "dbed700504a48bbbfab442e82f7dfc5b",
+    "semantic_hash": ""
   },
   "client/src/pages/HomePage.jsx": {
-    "mtime": 1790377529.3327577,
-    "seen": 1790377731.1157694,
-    "ast_hash": "3a6f0566138bf2c0dd4f02d873ef4a97",
-    "semantic_hash": "3a6f0566138bf2c0dd4f02d873ef4a97"
+    "mtime": 1790379894.531414,
+    "seen": 1790390411.2133224,
+    "ast_hash": "07602f2c8d9cdea64bb437a9ee68901c",
+    "semantic_hash": ""
   },
   "client/src/pages/PodcastPage.jsx": {
-    "mtime": 1790377529.3327577,
-    "seen": 1790377731.1157708,
-    "ast_hash": "dee48f198e8f0ea807008f675e005f91",
-    "semantic_hash": "dee48f198e8f0ea807008f675e005f91"
+    "mtime": 1790379959.850448,
+    "seen": 1790390411.2133253,
+    "ast_hash": "67605b7668d046b1ef20513fdbf0fe7b",
+    "semantic_hash": ""
   },
   "client/src/pages/SearchPage.jsx": {
     "mtime": 1790377529.3327577,
@@ -150,10 +150,10 @@
     "semantic_hash": "7051ed4a4b157de9e0417538a733c5ba"
   },
   "server/package.json": {
-    "mtime": 1790377530.7769308,
-    "seen": 1790377731.1157827,
-    "ast_hash": "5b41d315db626a6c4406447e812483f9",
-    "semantic_hash": "5b41d315db626a6c4406447e812483f9"
+    "mtime": 1790385097.82029,
+    "seen": 1790390411.2133448,
+    "ast_hash": "32fcc744376fac0f8bd19e36a7cacd75",
+    "semantic_hash": ""
   },
   "server/src/config/podcastindex.js": {
     "mtime": 1790377530.7769308,
@@ -162,15 +162,75 @@
     "semantic_hash": "5191600a5aa697e408646226842c52f7"
   },
   "server/src/index.js": {
-    "mtime": 1790377530.7769308,
-    "seen": 1790377731.115786,
-    "ast_hash": "0d2a5da46d60e75026d49eeb8071ea93",
-    "semantic_hash": "0d2a5da46d60e75026d49eeb8071ea93"
+    "mtime": 1790385170.8651967,
+    "seen": 1790390411.2133532,
+    "ast_hash": "62101f9af4bd15c60c5bcbdb0e3ab202",
+    "semantic_hash": ""
   },
   "server/src/routes/podcastindex.js": {
-    "mtime": 1790377530.7927978,
-    "seen": 1790377731.1157875,
-    "ast_hash": "e7e58cb6c5e4f92dedb2ac14f1f1434e",
-    "semantic_hash": "e7e58cb6c5e4f92dedb2ac14f1f1434e"
+    "mtime": 1790386046.966753,
+    "seen": 1790390411.2133555,
+    "ast_hash": "b8089b3d3aa40e42e22bbfd83d837a07",
+    "semantic_hash": ""
+  },
+  "server/src/config/database.js": {
+    "mtime": 1790386076.7276888,
+    "seen": 1790390411.2133477,
+    "ast_hash": "2c5d0d867eab07d307d66d82c631b31a",
+    "semantic_hash": ""
+  },
+  "SQLITE_SETUP.md": {
+    "mtime": 1790385616.9295719,
+    "seen": 1790390411.213358,
+    "ast_hash": "38193c3ae1e743219bbcc67ed252cc73",
+    "semantic_hash": ""
+  },
+  "client/README.md": {
+    "mtime": 1790377529.291952,
+    "seen": 1790390411.21336,
+    "ast_hash": "2e7344e9810cbd1b6fdb6aa7efe117e7",
+    "semantic_hash": ""
+  },
+  "client/index.html": {
+    "mtime": 1790377529.2944844,
+    "seen": 1790390411.2133627,
+    "ast_hash": "c3235912285c5785d3afa4e66795dba1",
+    "semantic_hash": ""
+  },
+  "ideia.md": {
+    "mtime": 1790377529.348483,
+    "seen": 1790390411.2133648,
+    "ast_hash": "4dfd45d50e9752c6121a8327955e0ad0",
+    "semantic_hash": ""
+  },
+  "client/public/favicon.svg": {
+    "mtime": 1790377529.2995489,
+    "seen": 1790390411.213367,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": ""
+  },
+  "client/public/icons.svg": {
+    "mtime": 1790377529.3018231,
+    "seen": 1790390411.2133691,
+    "ast_hash": "21c7473c592c67dc87223d49892c8f0a",
+    "semantic_hash": ""
+  },
+  "client/src/assets/hero.png": {
+    "mtime": 1790377529.3038425,
+    "seen": 1790390411.2133713,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": ""
+  },
+  "client/src/assets/react.svg": {
+    "mtime": 1790377529.3038425,
+    "seen": 1790390411.2133732,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": ""
+  },
+  "client/src/assets/vite.svg": {
+    "mtime": 1790377529.3085265,
+    "seen": 1790390411.2133756,
+    "ast_hash": "6d5180a782d64c8cf51ba01c2a2184d8",
+    "semantic_hash": ""
   }
 }

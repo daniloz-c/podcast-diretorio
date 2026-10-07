@@ -10,18 +10,22 @@ import CustomListsPage from './pages/CustomListsPage';
 import AudioPlayerBar from './components/AudioPlayerBar';
 import CreateListModal from './components/CreateListModal';
 import AuthModal from './components/AuthModal';
+import DiaryPage from './pages/DiaryPage';
+import WatchlistPage from './pages/WatchlistPage';
 import { AuthProvider } from './context/AuthContext';
 import { AudioProvider } from './context/AudioContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 export default function App() {
   const [isCreateListOpen, setIsCreateListOpen] = useState(false);
 
   return (
-    <AuthProvider>
-      <AudioProvider>
-        <BrowserRouter>
-          <div className="app-container">
-            <Navbar onOpenCreateList={() => setIsCreateListOpen(true)} />
+    <ThemeProvider>
+      <AuthProvider>
+        <AudioProvider>
+          <BrowserRouter>
+            <div className="app-container">
+              <Navbar onOpenCreateList={() => setIsCreateListOpen(true)} />
             
             <main className="main-content">
               <Routes>
@@ -31,6 +35,8 @@ export default function App() {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/profile" element={<UserProfilePage />} />
                 <Route path="/lists" element={<CustomListsPage onOpenCreateList={() => setIsCreateListOpen(true)} />} />
+                <Route path="/diary" element={<DiaryPage />} />
+                <Route path="/watchlist" element={<WatchlistPage />} />
               </Routes>
             </main>
 
@@ -40,6 +46,7 @@ export default function App() {
           </div>
         </BrowserRouter>
       </AudioProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

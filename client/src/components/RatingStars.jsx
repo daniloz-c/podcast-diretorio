@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Star } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 export default function RatingStars({ rating = 0, onRate = null, size = 18, interactive = false }) {
   const [hoverRating, setHoverRating] = useState(0);
