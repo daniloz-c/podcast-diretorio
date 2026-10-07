@@ -1,7 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-export default function Button({ children, variant = 'primary', size = 'md', onClick, disabled = false, className = '', ...props }) {
+export function Button({ children, variant = 'primary', size = 'md', onClick, disabled = false, className = '', ...props }) {
   const baseClasses = 'btn';
   const variantClasses = {
     primary: 'btn-primary',
@@ -35,11 +34,5 @@ export default function Button({ children, variant = 'primary', size = 'md', onC
   );
 }
 
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'danger', 'outline']),
-  size: PropTypes.oneOf(['sm', 'md', 'lg']),
-  onClick: PropTypes.func,
-  disabled: PropTypes.bool,
-  className: PropTypes.string
-};
+export default Button;
+

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Heart, Star, UserPlus, Play, Pause, ArrowUpDown, Flag } from 'lucide-react';
+import { Heart, Star, UserPlus, Play, ArrowUpDown, Flag } from 'lucide-react';
 import RatingStars from '../components/RatingStars';
 import CommentSection from '../components/CommentSection';
 import { fetchPodcastById, fetchEpisodesByFeedId } from '../services/api';

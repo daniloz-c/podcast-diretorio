@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, TrendingUp, Radio, Compass, Flag, Flame, Cpu, Film } from 'lucide-react';
+import { Sparkles, Radio, Compass, Flag, Flame, Cpu, Film } from 'lucide-react';
 import PodcastCard from '../components/PodcastCard';
 import ActivityFeed from '../components/ActivityFeed';
 import { fetchTrendingPodcasts, fetchCategories } from '../services/api';

@@ -2,9 +2,7 @@ import api from './api';
 
 export async function saveRating(userId, episodeId, rating, comment = null) {
   try {
-    const res = await api.post('/ratings', null, {
-      params: { userId, episodeId, rating, comment }
-    });
+    const res = await api.post('/ratings', { userId, episodeId, rating, comment });
     return res.data;
   } catch (error) {
     console.error('Error saving rating:', error);
@@ -24,9 +22,7 @@ export async function fetchUserRatings(userId) {
 
 export async function deleteRating(userId, episodeId) {
   try {
-    const res = await api.delete('/ratings', {
-      { userId, episodeId }
-    });
+    const res = await api.delete('/ratings', { data: { userId, episodeId } });
     return res.data;
   } catch (error) {
     console.error('Error deleting rating:', error);
@@ -36,9 +32,7 @@ export async function deleteRating(userId, episodeId) {
 
 export async function addToWatchlist(userId, episodeId) {
   try {
-    const res = await api.post('/watchlist', null, {
-      params: { userId, episodeId }
-    });
+    const res = await api.post('/watchlist', { userId, episodeId });
     return res.data;
   } catch (error) {
     console.error('Error adding to watchlist:', error);
@@ -48,9 +42,7 @@ export async function addToWatchlist(userId, episodeId) {
 
 export async function removeFromWatchlist(userId, episodeId) {
   try {
-    const res = await api.delete('/watchlist', {
-      { userId, episodeId }
-    });
+    const res = await api.delete('/watchlist', { data: { userId, episodeId } });
     return res.data;
   } catch (error) {
     console.error('Error removing from watchlist:', error);
@@ -70,12 +62,10 @@ export async function fetchUserWatchlist(userId) {
 
 export async function checkWatchlist(userId, episodeId) {
   try {
-    const res = await api.post('/watchlist/check', null, {
-      params: { userId, episodeId }
-    });
+    const res = await api.post('/watchlist/check', { userId, episodeId });
     return res.data.inWatchlist || false;
   } catch (error) {
     console.error('Error checking watchlist:', error);
     return false;
   }
-}
+}

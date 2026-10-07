@@ -4,7 +4,7 @@ import RatingStars from './RatingStars';
 import { useAuth } from '../context/AuthContext';
 import { getPodcastReviews, saveRatingAndReview } from '../services/socialService';
 
-export default function CommentSection({ podcastId, podcastTitle }) {
+export default function CommentSection({ podcastId, podcastTitle, episode = null }) {
   const { currentUser, setIsAuthModalOpen } = useAuth();
   const [reviews, setReviews] = useState(() => getPodcastReviews(podcastId));
   const [commentText, setCommentText] = useState('');
@@ -18,11 +18,30 @@ export default function CommentSection({ podcastId, podcastTitle }) {
     }
 
     if (commentText.trim()) {
-      saveRatingAndReview(podcastId, podcastTitle, userRating, commentText.trim(), currentUser);
+      const isEp = !!(episode || String(podcastId).startsWith('ep-'));
+      const epId = episode?.id || (String(podcastId).startsWith('ep-') ? String(podcastId).replace('ep-', '') : null);
+
+      saveRatingAndReview(
+        podcastId,
+        episode?.title || podcastTitle,
+        userRating,
+        commentText.trim(),
+        currentUser,
+        {
+          type: isEp ? 'episode' : 'podcast',
+          podcastId: episode?.feedId || episode?.podcastId || null,
+          podcastTitle: episode?.podcastTitle || podcastTitle,
+          coverImage: episode?.feedImage || episode?.image || episode?.podcastImage,
+          episodeId: epId,
+          episodeTitle: episode?.title || podcastTitle,
+          duration: episode?.duration || 0
+        }
+      );
       setReviews(getPodcastReviews(podcastId));
       setCommentText('');
     }
   };
+
 
   return (
     <div style={{ marginTop: 32 }}>

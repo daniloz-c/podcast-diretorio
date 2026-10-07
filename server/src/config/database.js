@@ -118,18 +118,18 @@ function insertPodcast(podcast) {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
   `);
   return stmt.run(
-    podcast.itunes_id,
+    podcast.itunes_id ?? podcast.itunesId ?? podcast.id,
     podcast.title,
     podcast.author,
-    podcast.owner_name,
+    podcast.owner_name ?? podcast.ownerName,
     podcast.description,
     podcast.image,
     podcast.artwork,
     podcast.link,
-    podcast.feed_url,
+    podcast.feed_url ?? podcast.feedUrl,
     podcast.language || 'pt-BR',
     podcast.country || 'BRA',
-    podcast.trend_score || 80,
+    podcast.trend_score ?? podcast.trendScore ?? 80,
     podcast.source || 'itunes'
   );
 }
@@ -144,18 +144,18 @@ function insertPodcasts(podcasts) {
   const insertMany = db.transaction((podcasts) => {
     for (const p of podcasts) {
       insert.run(
-        p.itunes_id,
+        p.itunes_id ?? p.itunesId ?? p.id,
         p.title,
         p.author,
-        p.owner_name,
+        p.owner_name ?? p.ownerName,
         p.description,
         p.image,
         p.artwork,
         p.link,
-        p.feed_url,
+        p.feed_url ?? p.feedUrl,
         p.language || 'pt-BR',
         p.country || 'BRA',
-        p.trend_score || 80,
+        p.trend_score ?? p.trendScore ?? 80,
         p.source || 'itunes'
       );
     }
@@ -169,6 +169,10 @@ function getEpisodes(podcastId) {
   `).all(podcastId);
 }
 
+function getEpisodeById(id) {
+  return db.prepare('SELECT * FROM episodes WHERE id = ?').get(id);
+}
+
 function insertEpisodes(episodes) {
   const insert = db.prepare(`
     INSERT OR REPLACE INTO episodes (
@@ -176,19 +180,26 @@ function insertEpisodes(episodes) {
       enclosure_url, feed_image, feed_id, link
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
+  const ensurePodcast = db.prepare(`
+    INSERT OR IGNORE INTO podcasts (itunes_id, title) VALUES (?, ?)
+  `);
   const insertMany = db.transaction((episodes) => {
     for (const ep of episodes) {
+      const pId = ep.podcast_id ?? ep.podcastId ?? ep.feed_id ?? ep.feedId;
+      if (pId) {
+        ensurePodcast.run(pId, ep.podcastTitle || ep.podcast_title || 'Podcast');
+      }
       insert.run(
         ep.id,
-        ep.podcast_id,
+        pId,
         ep.title,
         ep.description,
-        ep.date_published,
+        ep.date_published ?? ep.datePublished ?? 0,
         ep.duration || 0,
-        ep.enclosure_url,
-        ep.feed_image,
-        ep.feed_id,
-        ep.link
+        ep.enclosure_url ?? ep.enclosureUrl ?? '',
+        ep.feed_image ?? ep.feedImage ?? '',
+        ep.feed_id ?? ep.feedId ?? null,
+        ep.link || ''
       );
     }
   });
@@ -259,7 +270,7 @@ function isInWatchlist(userId, episodeId) {
 
 function getRatingsByUser(userId) {
   return db.prepare(`
-    SELECT u.*, e.id AS episode_id, e.podcast_id, e.title AS episode_title, e.image AS episode_image,
+    SELECT u.*, e.id AS episode_id, e.podcast_id, e.title AS episode_title, e.feed_image AS episode_image,
            p.title AS podcast_title, p.author AS podcast_author
     FROM user_ratings u
     JOIN episodes e ON u.episode_id = e.id
@@ -278,6 +289,7 @@ export {
   insertPodcast,
   insertPodcasts,
   getEpisodes,
+  getEpisodeById,
   insertEpisodes,
   getCategories,
   getRatingByUserAndEpisode,
@@ -289,4 +301,4 @@ export {
   removeFromWatchlist,
   isInWatchlist,
   getRatingsByUser
-};
+};

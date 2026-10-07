@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, List, Star, Activity, User, Edit3 } from 'lucide-react';
+import { Heart, List, Star } from 'lucide-react';
 import PodcastCard from '../components/PodcastCard';
 import RatingStars from '../components/RatingStars';
 import { useAuth } from '../context/AuthContext';
-import { getUserFavorites, getUserLists, getAllReviews, getActivityFeed } from '../services/socialService';
+import { getUserFavorites, getUserLists, getAllReviews } from '../services/socialService';
 
 export default function UserProfilePage() {
   const { currentUser } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [lists, setLists] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [activities, setActivities] = useState([]);
 
   useEffect(() => {
     setFavorites(getUserFavorites());
     setLists(getUserLists());
     setReviews(getAllReviews());
-    setActivities(getActivityFeed());
   }, []);
+
 
   if (!currentUser) {
     return <div style={{ color: 'var(--text-muted)', padding: '60px 0', textAlign: 'center' }}>Faça login para ver seu perfil.</div>;

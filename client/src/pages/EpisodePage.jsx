@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Play, Pause, ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
+import { Play, Pause, ArrowLeft, Calendar, Clock } from 'lucide-react';
 import CommentSection from '../components/CommentSection';
 import { fetchEpisodeById } from '../services/api';
 import { useAudio } from '../context/AudioContext';
@@ -79,7 +79,7 @@ export default function EpisodePage() {
         </div>
       </div>
 
-      <CommentSection podcastId={`ep-${episode.id}`} podcastTitle={episode.title} />
+      <CommentSection podcastId={`ep-${episode.id}`} podcastTitle={episode.title} episode={episode} />
     </div>
   );
 }

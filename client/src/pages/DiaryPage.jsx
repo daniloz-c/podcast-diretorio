@@ -3,16 +3,14 @@ import { Link } from 'react-router-dom';
 import { Clock, Star, PlayCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { fetchUserRatings } from '../services/userService';
-import { Card } from './Card';
-import { Button } from './Button';
-import { Clock, Star, PlayCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { fetchUserRatings } from '../services/userService';
-import { Card } from './Card';
-import { Button } from './Button';
+import { getDiaryEntries } from '../services/socialService';
+import { Card } from '../components/Card';
+import { Button } from '../components/Button';
 
 const formatRelativeTime = (dateString) => {
+  if (!dateString) return 'recentemente';
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return 'recentemente';
   const now = new Date();
   const diffInMinutes = Math.floor((now - date) / (1000 * 60));
   const diffInHours = Math.floor(diffInMinutes / 60);
@@ -47,8 +45,37 @@ export default function DiaryPage() {
     const loadRatings = async () => {
       setLoading(true);
       try {
-        const userRatings = await fetchUserRatings(currentUser.uid);
-        setRatings(userRatings);
+        const localEntries = getDiaryEntries();
+        let apiRatings = [];
+        try {
+          apiRatings = await fetchUserRatings(currentUser.uid);
+        } catch (err) {
+          console.warn('Backend ratings fetch error:', err);
+        }
+
+        const formattedLocal = localEntries.map((e) => ({
+          id: e.id,
+          episode_id: e.episodeId || e.podcastId || e.id,
+          episode_title: e.episodeTitle || e.podcastTitle || 'Episódio',
+          podcast_title: e.podcastTitle || 'Podcast',
+          episode_image: e.podcastImage || e.coverImage || 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80',
+          rating: e.rating || 0,
+          comment: e.comment || '',
+          created_at: e.listenedDate || new Date(e.createdAt || Date.now()).toISOString()
+        }));
+
+        const seenKeys = new Set(apiRatings.map((r) => String(r.episode_id || r.id)));
+        const combined = [...apiRatings];
+
+        formattedLocal.forEach((item) => {
+          const key = String(item.episode_id || item.id);
+          if (!seenKeys.has(key)) {
+            seenKeys.add(key);
+            combined.push(item);
+          }
+        });
+
+        setRatings(combined);
       } catch (error) {
         console.error('Error loading diary entries:', error);
       } finally {
@@ -58,6 +85,7 @@ export default function DiaryPage() {
 
     loadRatings();
   }, [currentUser]);
+
 
   if (!currentUser) {
     return (

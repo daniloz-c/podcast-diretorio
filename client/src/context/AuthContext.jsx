@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
     }
   }, [currentUser]);
 
-  const login = (email, password) => {
+  const login = (email, _password) => {
     const user = {
       uid: 'user-' + Date.now(),
       displayName: email.split('@')[0],
@@ -36,7 +36,8 @@ export function AuthProvider({ children }) {
     setIsAuthModalOpen(false);
   };
 
-  const signup = (displayName, email, password) => {
+  const signup = (displayName, email, _password) => {
+
     const user = {
       uid: 'user-' + Date.now(),
       displayName,

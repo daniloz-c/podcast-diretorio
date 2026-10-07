@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import axios from 'axios';
 import Parser from 'rss-parser';
-import { getPodcasts, getPodcastByItunesId, insertPodcasts, getEpisodes, insertEpisodes, getCategories } from '../config/database.js';
+import { getPodcasts, getPodcastByItunesId, insertPodcasts, getEpisodes, getEpisodeById, insertEpisodes, getCategories } from '../config/database.js';
 
 const router = Router();
 const rssParser = new Parser({
@@ -399,26 +399,96 @@ router.get('/episodes/byfeedid', async (req, res) => {
   }
 });
 
-    // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
 // GET /episodes/byid?id=:episodeGuid — Detalhes do episódio
 // ─────────────────────────────────────────────
 router.get('/episodes/byid', async (req, res) => {
   const id = req.query.id;
   if (!id) return res.status(400).json({ error: 'Episode ID required' });
-  return res.json({
-    status: 'true',
-    episode: {
-      id,
-      title: 'Episódio',
-      description: '',
-      datePublished: 0,
-      duration: 0,
-      enclosureUrl: '',
-      feedImage: '',
-      feedId: null
+
+  try {
+    // 1. Check local database cache first
+    let cached = getEpisodeById(id);
+    if (cached) {
+      return res.json({
+        status: 'true',
+        episode: {
+          id: cached.id,
+          podcastId: cached.podcast_id,
+          title: cached.title,
+          description: cached.description,
+          datePublished: cached.date_published,
+          duration: cached.duration,
+          enclosureUrl: cached.enclosure_url,
+          feedImage: cached.feed_image,
+          feedId: cached.feed_id || cached.podcast_id,
+          link: cached.link
+        }
+      });
     }
-  });
+
+    // 2. If not found, attempt fallback using feedId if available or encoded in ID
+    let feedId = req.query.feedId || null;
+    if (!feedId && String(id).startsWith('ep-')) {
+      const parts = String(id).split('-');
+      if (parts.length >= 2) feedId = parts[1];
+    }
+
+    if (feedId) {
+      const lookupRes = await axios.get(`${ITUNES_BASE}/lookup?id=${feedId}`, { timeout: 6000 });
+      const podcast = (lookupRes.data?.results || []).find(r => r.feedUrl);
+      if (podcast && podcast.feedUrl) {
+        const feed = await rssParser.parseURL(podcast.feedUrl);
+        const coverImage = feed.image?.url || feed.itunes?.image || '';
+        const items = (feed.items || []).map((ep, idx) => {
+          const pub = ep.pubDate ? Math.floor(new Date(ep.pubDate).getTime() / 1000) : 0;
+          let durationSec = 0;
+          if (ep.itunes?.duration) {
+            const parts = String(ep.itunes.duration).split(':').map(Number);
+            if (parts.length === 3) durationSec = parts[0] * 3600 + parts[1] * 60 + parts[2];
+            else if (parts.length === 2) durationSec = parts[0] * 60 + parts[1];
+            else durationSec = parts[0] || 0;
+          }
+          return {
+            id: ep.guid || `ep-${feedId}-${idx}`,
+            title: ep.title || `Episódio ${idx + 1}`,
+            description: ep.contentSnippet || ep.content || ep.itunes?.summary || '',
+            datePublished: pub,
+            duration: durationSec,
+            enclosureUrl: ep.enclosure?.url || '',
+            feedImage: ep.itunes?.image?.$?.href || coverImage,
+            feedId: Number(feedId),
+            link: ep.link || ''
+          };
+        });
+        insertEpisodes(items);
+        cached = getEpisodeById(id);
+        if (cached) {
+          return res.json({
+            status: 'true',
+            episode: {
+              id: cached.id,
+              podcastId: cached.podcast_id,
+              title: cached.title,
+              description: cached.description,
+              datePublished: cached.date_published,
+              duration: cached.duration,
+              enclosureUrl: cached.enclosure_url,
+              feedImage: cached.feed_image,
+              feedId: cached.feed_id || cached.podcast_id,
+              link: cached.link
+            }
+          });
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[Get Episode By ID] Erro:', err.message);
+  }
+
+  return res.status(404).json({ status: 'false', message: 'Episódio não encontrado' });
 });
+
 
 // ─────────────────────────────────────────────
 // GET /categories — Categorias incluindo Tecnologia (TI) e Cultura Pop (Geek/Nerd)
