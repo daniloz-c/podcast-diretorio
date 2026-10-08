@@ -5,14 +5,9 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('lb_user');
-    return saved ? JSON.parse(saved) : {
-      uid: 'user-demo-123',
-      displayName: 'Danilo Silva',
-      email: 'danilo@example.com',
-      handle: '@danilosilva',
-      avatarUrl: null
-    };
+    return saved ? JSON.parse(saved) : null;
   });
+
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
