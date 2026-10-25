@@ -12,7 +12,7 @@
           "name": "jarvis",
           "modalities": {
             "input": ["text", "image"],
-            "output": ["text"]
+            "output": ["text"
           }
         }
       }
