@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import axios from 'axios';
 import Parser from 'rss-parser';
+import { latestEpisodeDate, selectRecentPodcasts } from '../services/recentPodcasts.js';
 import { getPodcasts, getPodcastByItunesId, insertPodcasts, getEpisodes, getEpisodeById, insertEpisodes, getCategories } from '../config/database.js';
 
 const router = Router();
@@ -114,6 +115,56 @@ const BR_TOP_PODCAST_IDS = [
 const RANK_MAP = new Map();
 BR_TOP_PODCAST_IDS.forEach((id, index) => {
   RANK_MAP.set(Number(id), index + 1);
+});
+
+// Cache curto de verificações RSS; não reutiliza o cache de episódios sem validade.
+let recentTopCache = null;
+let recentTopRequest = null;
+const RECENT_TOP_CACHE_TTL = 60 * 60 * 1000;
+
+async function loadRecentTopPodcasts() {
+  const response = await axios.get(`${ITUNES_BASE}/lookup`, {
+    params: { id: BR_TOP_PODCAST_IDS.join(','), entity: 'podcast', country: 'BR' },
+    timeout: 10000
+  });
+  const candidates = deduplicateAndFilter(response.data?.results || [])
+    .sort((a, b) => RANK_MAP.get(Number(a.collectionId || a.trackId)) - RANK_MAP.get(Number(b.collectionId || b.trackId)));
+  const checked = await Promise.all(candidates.map(async item => {
+    if (!item.feedUrl) return null;
+    try {
+      const feed = await rssParser.parseURL(item.feedUrl);
+      return {
+        ...normalizeiTunesPodcast(item),
+        latestEpisodePublishedAt: latestEpisodeDate(feed.items || [])
+      };
+    } catch (error) {
+      // Não mostrar podcasts cuja atividade não pôde ser confirmada.
+      console.warn(`[Top recente] Feed ${item.collectionId}:`, error.message);
+      return null;
+    }
+  }));
+  const podcasts = checked.filter(Boolean);
+  recentTopCache = { podcasts, checkedAt: Date.now() };
+  return podcasts;
+}
+
+// Apenas o Top 5 usa este filtro; o catálogo completo permanece disponível.
+router.get('/podcasts/top-recent', async (req, res) => {
+  try {
+    let podcasts;
+    if (recentTopCache && Date.now() - recentTopCache.checkedAt < RECENT_TOP_CACHE_TTL) {
+      podcasts = recentTopCache.podcasts;
+    } else {
+      if (!recentTopRequest) {
+        recentTopRequest = loadRecentTopPodcasts().finally(() => { recentTopRequest = null; });
+      }
+      podcasts = await recentTopRequest;
+    }
+    return res.json({ status: 'true', feeds: selectRecentPodcasts(podcasts) });
+  } catch (error) {
+    console.warn('[Top recente] Erro:', error.message);
+    return res.status(502).json({ status: 'false', message: 'Não foi possível verificar os episódios recentes' });
+  }
 });
 
 // ─────────────────────────────────────────────

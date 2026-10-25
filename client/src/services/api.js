@@ -7,6 +7,17 @@ const api = axios.create({
   timeout: 8000
 });
 
+export async function fetchRecentTopPodcasts() {
+  try {
+    // A primeira consulta verifica os feeds RSS dos candidatos ao ranking.
+    const res = await api.get('/podcasts/top-recent', { timeout: 25000 });
+    return res.data.feeds || [];
+  } catch (error) {
+    console.error('Error fetching recent top podcasts:', error);
+    return [];
+  }
+}
+
 export async function fetchTrendingPodcasts() {
   try {
     const res = await api.get('/podcasts/trending');

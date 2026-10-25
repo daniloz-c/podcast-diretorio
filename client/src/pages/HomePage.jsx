@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Sparkles, Radio, Compass, Flag, Flame, Cpu, Film } from 'lucide-react';
 import PodcastCard from '../components/PodcastCard';
 import ActivityFeed from '../components/ActivityFeed';
-import { fetchTrendingPodcasts, fetchCategories } from '../services/api';
+import { fetchRecentTopPodcasts, fetchCategories } from '../services/api';
 
 export default function HomePage() {
   const [trending, setTrending] = useState([]);
@@ -14,7 +14,7 @@ export default function HomePage() {
     async function loadData() {
       setLoading(true);
       const [trendList, catList] = await Promise.all([
-        fetchTrendingPodcasts(),
+        fetchRecentTopPodcasts(),
         fetchCategories()
       ]);
       setTrending(trendList);
@@ -68,11 +68,13 @@ export default function HomePage() {
           </h2>
 
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 16 }}>
-            Os 5 podcasts mais populares e ouvidos no Brasil, baseados no ranking das principais plataformas.
+            Os primeiros 5 podcasts do ranking brasileiro com episódio publicado há menos de 30 dias.
           </p>
 
           {loading ? (
             <div style={{ color: 'var(--text-muted)', padding: '40px 0' }}>Carregando os 5 podcasts mais ouvidos...</div>
+          ) : top5Podcasts.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)' }}>Nenhum podcast com episódio recente pôde ser confirmado no momento.</p>
           ) : (
             <div className="poster-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
               {top5Podcasts.map((podcast, index) => (
